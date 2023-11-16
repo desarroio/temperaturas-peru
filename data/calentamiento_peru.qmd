@@ -1,5 +1,6 @@
 
-```{r echo=FALSE}
+```{r}
+#| include: false
 library(readr)
 library(tidyverse)
 library(lubridate)
@@ -12,8 +13,9 @@ NOAA_Lima <- read_csv("NOAA_Lima.csv",
                col_types = cols(DATE = col_date(format = "%Y-%m-%d")))
 names(NOAA_Lima) <- tolower(names(NOAA_Lima))
 df <- NOAA_Lima |> 
-    select(date, tavg)
-head(df)
+    select(date, tavg) |> 
+    filter(date>"1981-12-31")
+df
 
 ```
 
@@ -38,53 +40,161 @@ df_week
 ```
 
 # Heatmap
-```{r}
-p <- ggplot(df_week, aes(year, week)) +
-    geom_raster(aes(fill = tavg_week)) +
-    scale_fill_distiller(palette = "RdBu", direction = -1) +
+
+# Plot base
+```{r fig.width=6, fig.height=5}
+
+p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
+    geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
+    scale_x_continuous(
+        expand = c(0, 0),
+        breaks = c(1990, 2000, 2010, 2020),
+        limits = c(1975, 2030),
+        position = "bottom"
+        ) + 
+    # scale_y_continuous(
+    #     ) +  # Remove space for y axis
+    scale_y_reverse(
+        expand = c(0, 0),
+        breaks = c(52, 3),
+        # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
+        limits = c(54, -3)
+        ) +
+    scale_fill_distiller(
+        palette = "RdBu", 
+        direction = -1,
+        breaks = c(15, 20, 25),
+        labels = c("15 °C", "20 °C ", "25 °C")) +
     labs(
-        x="Año",
-        y="Semana",
-        title = "Lima: Temperaturas promedio por semana") +
-    theme_void()  # Apply theme_void in ggplot2
+        x = "Año",
+        y = "Semana",
+        title = "El invierno 2023 fue de los más cálidos desde 'El Niño' 1997/98",
+        subtitle = "Temperaturas semanales promedio y Niños de intensidad fuerte"
+    )  +
+    labs(
+        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas diarias promedio",
+        fill = "Temp."
+        ) +
+        guides(fill = guide_colourbar(barwidth = unit(0.075, "inches"))) +
+        theme_void() +  # Use theme_void() as the base theme
+    theme(
+        text = element_text(
+            colour = "#F9F7F3",
+            family = "Sanchez"),
+        plot.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
+        panel.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
+        axis.line = element_blank(),
+        axis.text = element_text(size = 6), # Remove axis lines
+        plot.caption = element_text(
+            margin = margin(t = 20, unit = "pt"),
+            hjust = 0, vjust = 1, size = 5, 
+            color = "#F9F7F3", family = "Sanchez"),
+        plot.title = element_text(
+            margin = margin(b = 3, unit = "pt")),
+        plot.title.position = "plot", 
+        plot.subtitle = element_text(
+            margin = margin(b = 10, unit = "pt"),
+            size = 6), 
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        legend.position = "right",
+        legend.spacing.y = unit(15, "pt"),
+        axis.text.y = element_blank()
+        ) 
 
-# Convert to plotly object
-p_plotly <- ggplotly(p)
+# Print the plot
+print(p)
 
-# Now modify the layout to set equal aspect ratio
-p_plotly <- p_plotly %>%
-    layout(
-        plot_bgcolor = 'black',  # Set the plot background color to black
-        paper_bgcolor = 'black',  # Set the paper background color to black
-        font = list(color = "white"),  # Set the font color to white
-        xaxis = list(
-            showgrid = FALSE,  # Remove the x-axis grid
-            zeroline = FALSE,  # Remove the x-axis zero line
-            tickcolor = "white",  # Set the x-axis tick color to white
-            title = list(text = "Año", font = list(color = "white")),
-            range = c(min(df_week$year), max(df_week$year))  # Set the range for x-axis
-        ),
-        yaxis = list(
-            scaleanchor = "x",  # Ensure units are equally sized
-            scaleratio = 1,
-            showgrid = FALSE,  # Remove the y-axis grid
-            zeroline = FALSE,  # Remove the y-axis zero line
-            tickcolor = "white",  # Set the y-axis tick color to white
-            title = list(text = "Semana", font = list(color = "white"))  # Set y-axis title color
-        ),
-        title = list(
-        text = "Lima: Temperaturas promedio por semana",
-        font = list(color = "white")  # Set the plot title color to white
-        ),
-        legend = list(
-        bgcolor = "black",  # Set the legend background color to black
-        font = list(color = "white")  # Set the legend text color to white
-        )
-        )
-
-# Print the plotly object
-p_plotly
 ```
+
+```{r fig.width=6, fig.height=5}
+heatmap <- p +
+# Missing data
+    annotate(
+        "text", x = 2013.5, y = mean(range(df_week$week)), 
+        label = "2013 y 2014 sin datos disponibles", 
+        size = 3, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5
+        ) +
+# Inicio de año
+    annotate(
+        "text", x = 1981, y = 3.5, 
+        label = "Primera\nsemana\nde 1982", 
+        size = 2, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1,
+        ) +
+    geom_curve(
+        aes(x    = 1981,    y = 1, 
+            xend = 1979, yend = 3),
+        curvature = 0.3, color = "#F9F7F3", size = 0.2,
+        arrow = arrow(
+            type = "closed", length = unit(0.05, "inches"))
+        ) + 
+# # Fin de año
+#     annotate(
+#         "text", x = 1981, y = 53.5, 
+#         label = "Última semana", 
+#         size = 2, color = "#F9F7F3", family = "Sanchez", vjust = 0, hjust = 1,
+#         ) +
+# Última semana
+    geom_curve(
+        aes(x    = 2023.2,    y = 46,
+            xend = 2024.5, yend = 48),
+        curvature = 0.3, color = "#F9F7F3", size = 0.2,
+        arrow = arrow(
+            type = "closed", length = unit(0.05, "inches"))
+        ) +
+    annotate(
+        "text",
+        x = 2025, y = 47,
+        label = "Semana del\n05 al 09 de\nnoviembre\n2023",
+        angle = 0, hjust = 0,
+        color = "#F9F7F3", size = 2, family = "Sanchez"
+        ) +
+# FEN 83
+    annotate(
+        "text", 
+        x = 1982.5, y = 0, 
+        label = "Niño\n82/83", 
+        angle = 0, vjust = 0, 
+        color = "#F9F7F3", size = 2, family = "Sanchez"
+        ) +
+# FEN 98
+    annotate(
+        "text", 
+        x = 1997.5, y = 0, 
+        label = "Niño\n97/98", 
+        angle = 0, vjust = 0, 
+        color = "#F9F7F3", size = 2, family = "Sanchez"
+        ) +
+# FEN 23
+    annotate(
+        "text", 
+        x = 2023.5, y = 0, 
+        label = "¿Niño\n23/24?", 
+        angle = 0, vjust = 0, 
+        color = "#F9F7F3", size = 2, family = "Sanchez"
+        ) + 
+# Invierno
+    annotate(
+        "rect",
+        xmin = 2023.96,
+        xmax = 2024, ymin = 25, ymax = 38, 
+        colour = "#F9F7F3"
+    ) + 
+    annotate(
+        "text", 
+        x = 2025.5, y = 31.5, 
+        label = "Invierno", 
+        angle = 90, vjust = 0, 
+        color = "#F9F7F3", size = 3, family = "Sanchez"
+        ) 
+
+
+print(heatmap)
+```
+
+
 
 
 # Lines Plot 
@@ -111,20 +221,23 @@ df_week_colored <- df_week %>%
   mutate(color = rgb(color_function((normalized_tyear - normalized_avg_tyear) / (1 - normalized_avg_tyear) * 0.5 + 0.5), maxColorValue = 255))
 
 # Plot with the new color mapping
-plot_ly(df_week_colored,
-        x = ~week,
-        y = ~tavg_week,
-        name = ~year,
-        type = 'scatter',
-        mode = 'lines',
-        line = list(
-            color = ~color
-        )) %>%
-  layout(title = "Temperature by Week and Year",
-         xaxis = list(title = "Week"),
-         yaxis = list(title = "Average Temperature"),
-         paper_bgcolor = "black",
-         plot_bgcolor = "black")
+plot_ly(
+    df_week_colored,
+    x = ~week,
+    y = ~tavg_week,
+    name = ~year,
+    type = 'scatter',
+    mode = 'lines',
+    line = list(
+        color = ~color
+        )
+    ) %>%
+    layout(
+        title = "Temperature by Week and Year",
+        xaxis = list(title = "Week"),
+        yaxis = list(title = "Average Temperature"),
+        paper_bgcolor = "#2D2D2D",
+        plot_bgcolor = "#2D2D2D")
 
 
 ```
