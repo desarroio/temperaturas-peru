@@ -1,0 +1,133 @@
+
+```{r echo=FALSE}
+library(readr)
+library(tidyverse)
+library(lubridate)
+library(plotly)
+```
+
+# Import data
+```{r}
+NOAA_Lima <- read_csv("NOAA_Lima.csv",
+               col_types = cols(DATE = col_date(format = "%Y-%m-%d")))
+names(NOAA_Lima) <- tolower(names(NOAA_Lima))
+df <- NOAA_Lima |> 
+    select(date, tavg)
+head(df)
+
+```
+
+# Promedio por semana y promedio anual
+```{r}
+period_mean <- df %>%
+  group_by(year(date)) %>%
+  summarize(tyear = mean(tavg)) %>%
+  pull(tyear) %>%
+  mean()
+
+df_week <- df %>%
+  mutate(week = week(date), year = year(date)) %>%
+  group_by(year, week) %>%
+  summarize(tavg_week = mean(tavg)) %>%
+  ungroup() %>%
+  group_by(year) %>%
+  mutate(tyear = mean(tavg_week)) %>%
+  ungroup()
+
+df_week
+```
+
+# Heatmap
+```{r}
+p <- ggplot(df_week, aes(year, week)) +
+    geom_raster(aes(fill = tavg_week)) +
+    scale_fill_distiller(palette = "RdBu", direction = -1) +
+    labs(
+        x="Año",
+        y="Semana",
+        title = "Lima: Temperaturas promedio por semana") +
+    theme_void()  # Apply theme_void in ggplot2
+
+# Convert to plotly object
+p_plotly <- ggplotly(p)
+
+# Now modify the layout to set equal aspect ratio
+p_plotly <- p_plotly %>%
+    layout(
+        plot_bgcolor = 'black',  # Set the plot background color to black
+        paper_bgcolor = 'black',  # Set the paper background color to black
+        font = list(color = "white"),  # Set the font color to white
+        xaxis = list(
+            showgrid = FALSE,  # Remove the x-axis grid
+            zeroline = FALSE,  # Remove the x-axis zero line
+            tickcolor = "white",  # Set the x-axis tick color to white
+            title = list(text = "Año", font = list(color = "white")),
+            range = c(min(df_week$year), max(df_week$year))  # Set the range for x-axis
+        ),
+        yaxis = list(
+            scaleanchor = "x",  # Ensure units are equally sized
+            scaleratio = 1,
+            showgrid = FALSE,  # Remove the y-axis grid
+            zeroline = FALSE,  # Remove the y-axis zero line
+            tickcolor = "white",  # Set the y-axis tick color to white
+            title = list(text = "Semana", font = list(color = "white"))  # Set y-axis title color
+        ),
+        title = list(
+        text = "Lima: Temperaturas promedio por semana",
+        font = list(color = "white")  # Set the plot title color to white
+        ),
+        legend = list(
+        bgcolor = "black",  # Set the legend background color to black
+        font = list(color = "white")  # Set the legend text color to white
+        )
+        )
+
+# Print the plotly object
+p_plotly
+```
+
+
+# Lines Plot 
+```{r}
+# Normalize the tyear values
+min_tyear <- min(df_week$tyear)
+max_tyear <- max(df_week$tyear)
+range_tyear <- max_tyear - min_tyear
+
+df_week <- df_week %>%
+  mutate(normalized_tyear = (tyear - min_tyear) / range_tyear)
+
+# Calculate the actual average of tyear
+actual_avg_tyear <- mean(df_week$tyear)
+
+# Calculate the normalized value for the actual average
+normalized_avg_tyear <- (actual_avg_tyear - min_tyear) / range_tyear
+
+# Generate a continuous color palette function with white set at the normalized average
+color_function <- colorRamp(c("blue", "white", "red"), space = "rgb")
+
+# Apply the color function to normalized tyear values to get colors
+df_week_colored <- df_week %>%
+  mutate(color = rgb(color_function((normalized_tyear - normalized_avg_tyear) / (1 - normalized_avg_tyear) * 0.5 + 0.5), maxColorValue = 255))
+
+# Plot with the new color mapping
+plot_ly(df_week_colored,
+        x = ~week,
+        y = ~tavg_week,
+        name = ~year,
+        type = 'scatter',
+        mode = 'lines',
+        line = list(
+            color = ~color
+        )) %>%
+  layout(title = "Temperature by Week and Year",
+         xaxis = list(title = "Week"),
+         yaxis = list(title = "Average Temperature"),
+         paper_bgcolor = "black",
+         plot_bgcolor = "black")
+
+
+```
+
+
+
