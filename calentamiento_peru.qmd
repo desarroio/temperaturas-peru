@@ -9,7 +9,7 @@ library(plotly)
 
 # Import data
 ```{r}
-NOAA_Lima <- read_csv("NOAA_Lima.csv",
+NOAA_Lima <- read_csv("data/NOAA_Lima.csv",
                col_types = cols(DATE = col_date(format = "%Y-%m-%d")))
 names(NOAA_Lima) <- tolower(names(NOAA_Lima))
 df <- NOAA_Lima |> 
@@ -68,7 +68,7 @@ p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
     labs(
         x = "Año",
         y = "Semana",
-        title = "El invierno 2023 fue de los más cálidos desde 'El Niño' 1997/98",
+        title = "El invierno de Lima 2023 fue de los más cálidos desde 'El Niño' 1997/98",
         subtitle = "Temperaturas semanales promedio y Niños de intensidad fuerte"
     )  +
     labs(
@@ -101,7 +101,9 @@ p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
         legend.text = element_text(size = 6),
         legend.position = "right",
         legend.spacing.y = unit(15, "pt"),
-        axis.text.y = element_blank()
+        axis.text.y = element_blank(),
+        plot.margin = margin(
+            t = 10, r = 10, b = 10, l = 10, unit = "pt")
         ) 
 
 # Print the plot
@@ -190,6 +192,7 @@ heatmap <- p +
         color = "#F9F7F3", size = 3, family = "Sanchez"
         ) 
 
+ggsave("outputs/heatmap.png")
 
 print(heatmap)
 ```
