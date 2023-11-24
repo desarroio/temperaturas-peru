@@ -9,9 +9,25 @@ library(plotly)
 
 # Import data
 ```{r}
-NOAA_Lima <- read_csv("data/NOAA_Lima.csv",
+#| echo: false
+NOAA_Lima <- read_csv("data/NOAA_Lima2.csv",
                col_types = cols(DATE = col_date(format = "%Y-%m-%d")))
 names(NOAA_Lima) <- tolower(names(NOAA_Lima))
+
+tavg_63_23 <-  NOAA_Lima |> 
+    select(date, tavg) |> 
+    group_by(year(date)) %>%
+    summarize(tyear = mean(tavg, na.rm = TRUE)) %>%
+    pull(tyear) %>%
+    mean()
+
+df_all <- NOAA_Lima |> 
+    select(date, tavg)
+
+rain <- NOAA_Lima |> 
+    select(date, prcp) |> 
+    filter(date>"1981-12-31")
+
 df <- NOAA_Lima |> 
     select(date, tavg) |> 
     filter(date>"1981-12-31")
@@ -21,6 +37,7 @@ df
 
 # Promedio por semana y promedio anual
 ```{r}
+#| echo: false
 period_mean <- df %>%
   group_by(year(date)) %>%
   summarize(tyear = mean(tavg)) %>%
@@ -36,6 +53,17 @@ df_week <- df %>%
   mutate(tyear = mean(tavg_week)) %>%
   ungroup()
 
+rain_week <- rain %>%
+  mutate(week = week(date), year = year(date)) %>%
+  group_by(year, week) %>%
+  summarize(rain_week = mean(prcp, na.rm = TRUE)) %>%
+  ungroup() %>%
+  group_by(year) %>%
+  mutate(rain_year = mean(rain_week, na.rm = TRUE)) %>%
+  ungroup()
+
+
+
 df_week
 ```
 
@@ -43,13 +71,13 @@ df_week
 
 # Plot base
 ```{r fig.width=6, fig.height=6}
-
+#| echo: false
 p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
     geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
     scale_x_continuous(
         expand = c(0, 0),
         breaks = c(1990, 2000, 2010, 2020),
-        limits = c(1975, 2035),
+        limits = c(1974, 2035),
         position = "bottom"
         ) + 
     # scale_y_continuous(
@@ -72,11 +100,10 @@ p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
         subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte"
     )  +
     labs(
-        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas diarias promedio",
+        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
         fill = ""
         ) +
-        guides(fill = guide_colourbar(barwidth = unit(0.075, "inches"))) +
-        theme_void() +  # Use theme_void() as the base theme
+    theme_void() +  # Use theme_void() as the base theme
     theme(
         text = element_text(
             colour = "#F9F7F3",
@@ -96,18 +123,22 @@ p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
         plot.title.position = "plot", 
         plot.subtitle = element_text(
             margin = margin(b = 10, unit = "pt"),
-            size = 10), 
-        legend.title = element_text(size = 6),
-        legend.text = element_text(size = 6),
-        legend.position = c(0.04, 0.15),
-        legend.spacing.y = unit(15, "pt"),
+            size = 10),
         axis.text.y = element_blank(),
         axis.text.x = element_text(
             size = 7
         ),
         plot.margin = margin(
-            t = 10, r = 10, b = 10, l = 10, unit = "pt")
-        ) 
+            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        legend.position = c(0.87, -0.1),
+        legend.direction = "horizontal"#,
+        # legend.spacing.y = unit(15, "pt"),
+        ) +
+    # guides(fill = guide_colourbar(barwidth = unit(0.075, "inches"))) +
+        guides(fill = guide_colourbar(barheight = unit(0.075, "inches")))
+
 
 # Print the plot
 print(p)
@@ -115,6 +146,7 @@ print(p)
 ```
 
 ```{r fig.width=6, fig.height=6}
+#| echo: false
 heatmap <- p +
 # Missing data
     annotate(
@@ -125,7 +157,7 @@ heatmap <- p +
 # Inicio de año
     annotate(
         "text", x = 1981, y = 3.5, 
-        label = "Primera\nsemana\nde 1982", 
+        label = "Semana 1\nde 1982", 
         size = 3.5, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1,
         ) +
     geom_curve(
@@ -146,7 +178,206 @@ heatmap <- p +
     annotate(
         "text",
         x = 2025, y = 47,
-        label = "Semana del\n05 al 09 de\nnoviembre\n2023",
+        label = "Semana 45\nde 2023",
+        angle = 0, hjust = 0,
+        color = "#F9F7F3", size = 3.5, family = "Sanchez"
+        ) +
+# FEN 83
+    annotate(
+        "text", 
+        x = 1982.5, y = -0.5, 
+        label = "Niño\n82/83", 
+        angle = 0, vjust = 0, 
+        color = "#F9F7F3", size = 2.6, family = "Sanchez"
+        ) +
+# FEN 98
+    annotate(
+        "text", 
+        x = 1997.5, y = -0.5, 
+        label = "Niño\n97/98", 
+        angle = 0, vjust = 0, 
+        color = "#F9F7F3", size = 2.6, family = "Sanchez"
+        ) +
+# FEN 23
+    annotate(
+        "text", 
+        x = 2024.5, y = -0.5, 
+        label = "¿Niño\n23/24?", 
+        angle = 0, vjust = 0, 
+        color = "#F9F7F3", size = 2.6, family = "Sanchez"
+        ) 
+
+ggsave("outputs/heatmap.png") |> suppressMessages()
+ggsave("outputs/heatmap.svg") |> suppressMessages()
+
+print(heatmap)
+```
+
+# Lluvias
+
+```{r fig.width=6, fig.height=1}
+#| echo: false
+rain_year <- rain %>%
+  mutate(week = week(date), year = year(date)) %>%
+  group_by(year) %>%
+  summarize(rain_avg_year = mean(prcp, na.rm = TRUE),
+            rain_sum_year = sum(prcp, na.rm = TRUE)) |> 
+  ungroup() 
+
+ggplot(rain_year,
+       aes(x = year, y = rain_sum_year, fill = "red")) + 
+    geom_col() +
+    scale_x_continuous(
+        expand = c(0, 0),
+        breaks = c(1982, 1995, 2001, 1986, 2018),
+        limits = c(1974, 2035),
+        position = "bottom"
+    ) +
+    theme_void() +  # Use theme_void() as the base theme
+    theme(
+        text = element_text(
+            colour = "#F9F7F3",
+            family = "Sanchez"),
+        plot.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
+        panel.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
+        axis.line = element_blank(),
+        axis.text = element_text(size = 6), # Remove axis lines
+        plot.caption = element_text(
+            margin = margin(t = 20, unit = "pt"),
+            hjust = 0, vjust = 1, size = 5, 
+            color = "#F9F7F3", family = "Sanchez"),
+        plot.title = element_text(
+            margin = margin(b = 3, unit = "pt")),
+        plot.title.position = "plot", 
+        plot.subtitle = element_text(
+            margin = margin(b = 10, unit = "pt"),
+            size = 10),
+        # axis.text.y = element_blank(),
+        axis.text.x = element_text(
+            size = 7
+        ),
+        plot.margin = margin(
+            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        legend.position = "none",
+        legend.direction = "horizontal"#,
+        # legend.spacing.y = unit(15, "pt"),
+        )
+```
+
+## Lluvia heatmap
+```{r fig.width=6, fig.height=6}
+#| echo: false
+p_rain <- ggplot(rain_week, aes(x = year, y = week, fill = rain_week)) +
+    geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
+    scale_x_continuous(
+        expand = c(0, 0),
+        breaks = c(1990, 2000, 2010, 2020),
+        limits = c(1974, 2035),
+        position = "bottom"
+        ) + 
+    # scale_y_continuous(
+    #     ) +  # Remove space for y axis
+    scale_y_reverse(
+        expand = c(0, 0),
+        breaks = c(52, 3),
+        # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
+        limits = c(54, -5)
+        ) +
+    scale_fill_distiller(
+        palette = "Blues", 
+        direction = -1,
+        breaks = c(15, 20, 25),
+        labels = c("15 °C", "20 °C ", "25 °C")) +
+    labs(
+        x = "Año",
+        y = "Semana",
+        title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
+        subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte"
+    )  +
+    labs(
+        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
+        fill = ""
+        ) +
+    theme_void() +  # Use theme_void() as the base theme
+    theme(
+        text = element_text(
+            colour = "#F9F7F3",
+            family = "Sanchez"),
+        plot.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
+        panel.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
+        axis.line = element_blank(),
+        axis.text = element_text(size = 6), # Remove axis lines
+        plot.caption = element_text(
+            margin = margin(t = 20, unit = "pt"),
+            hjust = 0, vjust = 1, size = 5, 
+            color = "#F9F7F3", family = "Sanchez"),
+        plot.title = element_text(
+            margin = margin(b = 3, unit = "pt")),
+        plot.title.position = "plot", 
+        plot.subtitle = element_text(
+            margin = margin(b = 10, unit = "pt"),
+            size = 10),
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(
+            size = 7
+        ),
+        plot.margin = margin(
+            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        legend.position = c(0.87, -0.1),
+        legend.direction = "horizontal"#,
+        # legend.spacing.y = unit(15, "pt"),
+        ) +
+    # guides(fill = guide_colourbar(barwidth = unit(0.075, "inches"))) +
+        guides(fill = guide_colourbar(barheight = unit(0.075, "inches")))
+
+
+# Print the plot
+print(p)
+
+```
+
+```{r fig.width=6, fig.height=6}
+#| echo: false
+heatmap <- p_rain +
+# Missing data
+    annotate(
+        "text", x = 2013.5, y = mean(range(df_week$week)), 
+        label = "2013 y 2014 sin datos disponibles", 
+        size = 3, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5
+        ) +
+# Inicio de año
+    annotate(
+        "text", x = 1981, y = 3.5, 
+        label = "Semana 1\nde 1982", 
+        size = 3.5, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1,
+        ) +
+    geom_curve(
+        aes(x    = 1981,    y = 1, 
+            xend = 1979, yend = 3),
+        curvature = 0.3, color = "#F9F7F3", size = 0.2,
+        arrow = arrow(
+            type = "closed", length = unit(0.05, "inches"))
+        ) + 
+# Última semana
+    geom_curve(
+        aes(x    = 2023.2,    y = 46,
+            xend = 2024.5, yend = 48),
+        curvature = 0.3, color = "#F9F7F3", size = 0.2,
+        arrow = arrow(
+            type = "closed", length = unit(0.05, "inches"))
+        ) +
+    annotate(
+        "text",
+        x = 2025, y = 47,
+        label = "Semana 45\nde 2023",
         angle = 0, hjust = 0,
         color = "#F9F7F3", size = 3.5, family = "Sanchez"
         ) +
@@ -182,10 +413,73 @@ print(heatmap)
 ```
 
 
+```{r fig.width=6, fig.height=2}
+#| echo: false
+temps <- NOAA_Lima |> 
+    select(date, tmax, tavg, tmin) |> 
+    filter(date>"1981-12-31") %>%
+    mutate(week = week(date), year = year(date)) %>%
+    group_by(year) %>%
+    summarize(tavg_year = mean(tavg, na.rm = TRUE),
+            tmax_year = mean(tmax, na.rm = TRUE),
+            tmin_year = mean(tmin, na.rm = TRUE)) |> 
+    ungroup() 
+
+ggplot(temps, aes(x = year)) + 
+    geom_line(aes(y = tmax_year), color = "red") +
+    geom_line(aes(y = tavg_year), color = "white") +
+    geom_line(aes(y = tmin_year), color = "blue") +
+    scale_x_continuous(
+        expand = c(0, 0),
+        limits = c(1974, 2035),
+        position = "bottom"
+    ) +
+    theme_void() +  # Use theme_void() as the base theme
+    theme(
+        text = element_text(
+            colour = "#F9F7F3",
+            family = "Sanchez"),
+        plot.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
+        panel.background = element_rect(
+            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
+        axis.line = element_blank(),
+        axis.text = element_text(size = 6), # Remove axis lines
+        plot.caption = element_text(
+            margin = margin(t = 20, unit = "pt"),
+            hjust = 0, vjust = 1, size = 5, 
+            color = "#F9F7F3", family = "Sanchez"),
+        plot.title = element_text(
+            margin = margin(b = 3, unit = "pt")),
+        plot.title.position = "plot", 
+        plot.subtitle = element_text(
+            margin = margin(b = 10, unit = "pt"),
+            size = 10),
+        # axis.text.y = element_blank(),
+        axis.text.x = element_text(
+            size = 7
+        ),
+        plot.margin = margin(
+            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
+        legend.title = element_text(size = 6),
+        legend.text = element_text(size = 6),
+        legend.position = "none",
+        legend.direction = "horizontal"#,
+        # legend.spacing.y = unit(15, "pt"),
+        )
+
+```
+
+# smooth
+
+```{r}
+```
+
 
 
 # Lines Plot 
-```{r}
+```{r fig.width=6, fig.height=8}
+#| echo: false
 # Normalize the tyear values
 min_tyear <- min(df_week$tyear)
 max_tyear <- max(df_week$tyear)
@@ -216,18 +510,44 @@ plot_ly(
     type = 'scatter',
     mode = 'lines',
     line = list(
-        color = ~color
-        )
-    ) %>%
-    layout(
-        title = "Temperature by Week and Year",
-        xaxis = list(title = "Week"),
-        yaxis = list(title = "Average Temperature"),
-        paper_bgcolor = "#2D2D2D",
-        plot_bgcolor = "#2D2D2D")
-
+        color = ~color,
+        shape = "spline"  # Add this to smooth the lines
+    )
+) %>%
+layout(
+    title = "Temperature by Week and Year",
+    xaxis = list(title = "Week"),
+    yaxis = list(title = "Average Temperature"),
+    paper_bgcolor = "#2D2D2D",
+    plot_bgcolor = "#2D2D2D"
+)
 
 ```
 
+
+# Desviación del promedio
+```{r fig.width=6, fig.height=2}
+
+
+
+
+tavg_63_23 <-  NOAA_Lima |> 
+    select(date, tavg) |> 
+    pull(tavg)  |> 
+    mean()
+
+df_deviations <- NOAA_Lima |> 
+    select(date, tavg) |> 
+    group_by(year(date))  |> 
+    summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |> 
+    mutate(deviation = tyear - tavg_63_23)
+
+ggplot(
+    df_deviations,
+    aes(x = year, y = deviation, fill = "red")) +
+    geom_col()
+
+
+```
 
 
