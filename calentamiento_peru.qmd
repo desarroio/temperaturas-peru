@@ -7,28 +7,57 @@ library(lubridate)
 library(plotly)
 ```
 
-# Import data
+# Importar datos de NOAA
+
+ - Perú (estaciones con más de 66% de cobertura de datos)
+ - Lima (estación Aeropuerto Jorge Chávez)
+
 ```{r}
 #| echo: false
-NOAA_Lima <- read_csv("data/NOAA_Lima2.csv",
-               col_types = cols(DATE = col_date(format = "%Y-%m-%d")))
-names(NOAA_Lima) <- tolower(names(NOAA_Lima))
+per_80_23_noaa <- read_csv(
+    "data/NOAA_PER_1980_2023.csv",
+    col_types = cols(
+        DATE = col_date(format = "%Y-%m-%d"),
+        SNWD = col_double())
+    )
 
-tavg_63_23 <-  NOAA_Lima |> 
+lim_63_23_noaa <- read_csv(
+    "data/NOAA_Lima2.csv",
+    col_types = cols(DATE = col_date(format = "%Y-%m-%d"))
+    )
+
+# rename vars to lowercase
+# List of dataframe names as strings
+df_names <- c("per_80_23_noaa", "lim_63_23_noaa")
+
+# Loop through each dataframe name
+for (df_name in df_names) {
+  # Get the dataframe by name
+  df <- get(df_name)
+
+  # Modify column names to lowercase
+  colnames(df) <- tolower(colnames(df))
+
+  # Assign the modified dataframe back to the original name
+  assign(df_name, df)
+}
+
+#
+tavg_63_23 <-  lim_63_23_noaa |> 
     select(date, tavg) |> 
     group_by(year(date)) %>%
     summarize(tyear = mean(tavg, na.rm = TRUE)) %>%
     pull(tyear) %>%
     mean()
 
-df_all <- NOAA_Lima |> 
+df_all <- lim_63_23_noaa |> 
     select(date, tavg)
 
-rain <- NOAA_Lima |> 
+rain <- lim_63_23_noaa |> 
     select(date, prcp) |> 
     filter(date>"1981-12-31")
 
-df <- NOAA_Lima |> 
+df <- lim_63_23_noaa |> 
     select(date, tavg) |> 
     filter(date>"1981-12-31")
 df
@@ -415,7 +444,7 @@ print(heatmap)
 
 ```{r fig.width=6, fig.height=2}
 #| echo: false
-temps <- NOAA_Lima |> 
+temps <- lim_63_23_noaa |> 
     select(date, tmax, tavg, tmin) |> 
     filter(date>"1981-12-31") %>%
     mutate(week = week(date), year = year(date)) %>%
@@ -531,12 +560,12 @@ layout(
 
 
 
-tavg_63_23 <-  NOAA_Lima |> 
+tavg_63_23 <-  lim_63_23_noaa |> 
     select(date, tavg) |> 
     pull(tavg)  |> 
     mean()
 
-df_deviations <- NOAA_Lima |> 
+df_deviations <- lim_63_23_noaa |> 
     select(date, tavg) |> 
     group_by(year(date))  |> 
     summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |> 
