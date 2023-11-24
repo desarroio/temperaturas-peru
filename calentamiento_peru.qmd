@@ -1,5 +1,7 @@
+# Gráficos de temperaturas y lluvias en el Perú
 
-```{r}
+
+```{r libraries}
 #| include: false
 library(readr)
 library(tidyverse)
@@ -7,41 +9,18 @@ library(lubridate)
 library(plotly)
 ```
 
-# Importar datos de NOAA
+## Cargar datos de NOAA
 
- - Perú (estaciones con más de 66% de cobertura de datos)
- - Lima (estación Aeropuerto Jorge Chávez)
+ - Perú: todas las estaciones, desde 1947 en adelante
 
-```{r}
+```{r import}
 #| echo: false
-per_80_23_noaa <- read_csv(
-    "data/NOAA_PER_1980_2023.csv",
-    col_types = cols(
-        DATE = col_date(format = "%Y-%m-%d"),
-        SNWD = col_double())
-    )
+load("data/per_noaa_1947_2023.RData")
+glimpse(per_noaa_1947_2023)
+```
 
-lim_63_23_noaa <- read_csv(
-    "data/NOAA_Lima2.csv",
-    col_types = cols(DATE = col_date(format = "%Y-%m-%d"))
-    )
-
-# rename vars to lowercase
-# List of dataframe names as strings
-df_names <- c("per_80_23_noaa", "lim_63_23_noaa")
-
-# Loop through each dataframe name
-for (df_name in df_names) {
-  # Get the dataframe by name
-  df <- get(df_name)
-
-  # Modify column names to lowercase
-  colnames(df) <- tolower(colnames(df))
-
-  # Assign the modified dataframe back to the original name
-  assign(df_name, df)
-}
-
+## Data wrangling 
+```{r wrangling}
 #
 tavg_63_23 <-  lim_63_23_noaa |> 
     select(date, tavg) |> 
