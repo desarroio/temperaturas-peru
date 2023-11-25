@@ -13,7 +13,9 @@ per_noaa_2 <- read_csv(
     col_types = cols(
         DATE = col_date(format = "%Y-%m-%d"),
         SNWD = col_skip())
-    )
+    )|>
+    filter(
+        STATION != "BR000469001")
 
 per_noaa_3 <- read_csv(
     "data/raw/NOAA_PER_1940_2023_8_STATIONS.csv",

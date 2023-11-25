@@ -20,23 +20,85 @@ glimpse(per_noaa_1947_2023)
 ```
 
 ## Data wrangling 
-```{r wrangling}
-#
-tavg_63_23 <-  lim_63_23_noaa |> 
+
+```{r wrangling_databases}
+daily_data <- per_noaa_1947_2023
+
+weekly_averages <- per_noaa_1947_2023 |>
+    mutate(
+        week = week(date), 
+        year = year(date)) |>
+    group_by(
+        station, year, week)  |> 
+    summarize(
+        city = first(city),
+        prcp = mean(prcp, na.rm = TRUE),
+        tavg = mean(tavg, na.rm = TRUE),
+        tmax = mean(tmax, na.rm = TRUE),
+        tmin = mean(tmin, na.rm = TRUE),
+        name = first(name)
+        ) |> suppressMessages() |> 
+    ungroup()
+
+yearly_averages <- per_noaa_1947_2023 |>
+    mutate(
+        year = year(date)) |>
+    group_by(
+        station, year)  |>
+    summarize(
+        city = first(city),
+        prcp = mean(prcp, na.rm = TRUE),
+        tavg = mean(tavg, na.rm = TRUE),
+        tmax = mean(tmax, na.rm = TRUE),
+        tmin = mean(tmin, na.rm = TRUE),
+        name = first(name)
+        ) |> suppressMessages() |> 
+    ungroup()
+
+cat("daily_data:\n")
+glimpse(daily_data) 
+cat("\n")
+
+cat("weekly_averages:\n")
+glimpse(weekly_averages)
+cat("\n")
+
+cat("yearly_averages:\n")
+glimpse(yearly_averages)
+cat("\n")
+
+```
+
+### Temperatura promedio 1947-2023
+```{r temp_promedio}
+# Hallar temperatura promedio 1947-2023
+temp_avg_63_23 <-  per_noaa_1947_2023 |> 
+    filter(city == "Lima - Callao",
+           date > "1962-12-31") |> 
     select(date, tavg) |> 
     group_by(year(date)) %>%
     summarize(tyear = mean(tavg, na.rm = TRUE)) %>%
     pull(tyear) %>%
     mean()
+temp_avg_63_23
+```
 
-df_all <- lim_63_23_noaa |> 
-    select(date, tavg)
+### 
+```{r wrangling}
+# df_all <- per_noaa_1947_2023 |> 
+#     filter(city == "Lima - Callao",
+#            date > "1962-12-31")  |> 
+#     select(date, tavg)
 
-rain <- lim_63_23_noaa |> 
+rain <- per_noaa_1947_2023 |> 
+    filter(city == "Lima - Callao",
+           date > "1962-12-31")  |> 
     select(date, prcp) |> 
     filter(date>"1981-12-31")
 
-df <- lim_63_23_noaa |> 
+df <- per_noaa_1947_2023 |> 
+    filter(city == "Lima - Callao",
+           date > "1962-12-31")  |> 
     select(date, tavg) |> 
     filter(date>"1981-12-31")
 df
@@ -75,42 +137,12 @@ rain_week <- rain %>%
 df_week
 ```
 
-# Heatmap
+# Heatmaps semanales
 
-# Plot base
-```{r fig.width=6, fig.height=6}
-#| echo: false
-p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
-    geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
-    scale_x_continuous(
-        expand = c(0, 0),
-        breaks = c(1990, 2000, 2010, 2020),
-        limits = c(1974, 2035),
-        position = "bottom"
-        ) + 
-    # scale_y_continuous(
-    #     ) +  # Remove space for y axis
-    scale_y_reverse(
-        expand = c(0, 0),
-        breaks = c(52, 3),
-        # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
-        limits = c(54, -5)
-        ) +
-    scale_fill_distiller(
-        palette = "RdBu", 
-        direction = -1,
-        breaks = c(15, 20, 25),
-        labels = c("15 °C", "20 °C ", "25 °C")) +
-    labs(
-        x = "Año",
-        y = "Semana",
-        title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
-        subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte"
-    )  +
-    labs(
-        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
-        fill = ""
-        ) +
+## Plot base
+
+```{r theme_heatmap}
+theme_heatmap <- function() {
     theme_void() +  # Use theme_void() as the base theme
     theme(
         text = element_text(
@@ -143,17 +175,72 @@ p <- ggplot(df_week, aes(x = year, y = week, fill = tavg_week)) +
         legend.position = c(0.87, -0.1),
         legend.direction = "horizontal"#,
         # legend.spacing.y = unit(15, "pt"),
+        )
+}
+```
+
+Creamos una función para hacer el heatmap base
+```{r fun_weekly_heatmap, fig.width=6, fig.height=6}
+#| echo: false
+
+make_base_weekly_heatmap <- function(weekly_dataset,
+                                     custom_breaks = waiver(),
+                                     custom_limits = waiver()
+                                     ) {
+    ggplot(
+        weekly_dataset,
+        aes(x = year, y = week, fill = tavg)) +
+        
+        geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
+        scale_x_continuous(
+            expand = c(0, 0),
+            breaks = custom_breaks,
+            limits = custom_limits,
+            position = "bottom"
+        ) + 
+    scale_y_reverse(
+        expand = c(0, 0),
+        breaks = c(52, 3),
+        # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
+        limits = c(54, -5)
         ) +
-    # guides(fill = guide_colourbar(barwidth = unit(0.075, "inches"))) +
-        guides(fill = guide_colourbar(barheight = unit(0.075, "inches")))
+    scale_fill_distiller(
+        palette = "RdBu", 
+        direction = -1,
+        breaks = c(15, 20, 25),
+        labels = c("15 °C", "20 °C ", "25 °C")
+    ) + 
+    labs(
+        x = "Año",
+        y = "Semana",
+        title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
+        subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte",
+        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
+        fill = "") + 
+    guides(fill = guide_colourbar(barheight = unit(0.075, "inches"))) +
+    theme_heatmap()
+}
+
+cat("make_base_weekly_heatmap():\n")
+args(make_base_weekly_heatmap)
+```
+
+
+```{r create_baselpot, fig.width=6, fig.height=6}
+p <- make_base_weekly_heatmap(
+    weekly_dataset = 
+        filter(weekly_averages,
+               year > 1981,
+               city == "Lima - Callao"),
+    custom_breaks = c(1990, 2000, 2010, 2020),
+    custom_limits = c(1974, 2035))
 
 
 # Print the plot
 print(p)
-
 ```
 
-```{r fig.width=6, fig.height=6}
+```{r stylize_plot, fig.width=6, fig.height=6}
 #| echo: false
 heatmap <- p +
 # Missing data
@@ -171,7 +258,7 @@ heatmap <- p +
     geom_curve(
         aes(x    = 1981,    y = 1, 
             xend = 1979, yend = 3),
-        curvature = 0.3, color = "#F9F7F3", size = 0.2,
+        curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
         arrow = arrow(
             type = "closed", length = unit(0.05, "inches"))
         ) + 
@@ -179,7 +266,7 @@ heatmap <- p +
     geom_curve(
         aes(x    = 2023.2,    y = 46,
             xend = 2024.5, yend = 48),
-        curvature = 0.3, color = "#F9F7F3", size = 0.2,
+        curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
         arrow = arrow(
             type = "closed", length = unit(0.05, "inches"))
         ) +
@@ -423,58 +510,58 @@ print(heatmap)
 
 ```{r fig.width=6, fig.height=2}
 #| echo: false
-temps <- lim_63_23_noaa |> 
-    select(date, tmax, tavg, tmin) |> 
-    filter(date>"1981-12-31") %>%
-    mutate(week = week(date), year = year(date)) %>%
-    group_by(year) %>%
-    summarize(tavg_year = mean(tavg, na.rm = TRUE),
-            tmax_year = mean(tmax, na.rm = TRUE),
-            tmin_year = mean(tmin, na.rm = TRUE)) |> 
-    ungroup() 
-
-ggplot(temps, aes(x = year)) + 
-    geom_line(aes(y = tmax_year), color = "red") +
-    geom_line(aes(y = tavg_year), color = "white") +
-    geom_line(aes(y = tmin_year), color = "blue") +
-    scale_x_continuous(
-        expand = c(0, 0),
-        limits = c(1974, 2035),
-        position = "bottom"
-    ) +
-    theme_void() +  # Use theme_void() as the base theme
-    theme(
-        text = element_text(
-            colour = "#F9F7F3",
-            family = "Sanchez"),
-        plot.background = element_rect(
-            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
-        panel.background = element_rect(
-            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
-        axis.line = element_blank(),
-        axis.text = element_text(size = 6), # Remove axis lines
-        plot.caption = element_text(
-            margin = margin(t = 20, unit = "pt"),
-            hjust = 0, vjust = 1, size = 5, 
-            color = "#F9F7F3", family = "Sanchez"),
-        plot.title = element_text(
-            margin = margin(b = 3, unit = "pt")),
-        plot.title.position = "plot", 
-        plot.subtitle = element_text(
-            margin = margin(b = 10, unit = "pt"),
-            size = 10),
-        # axis.text.y = element_blank(),
-        axis.text.x = element_text(
-            size = 7
-        ),
-        plot.margin = margin(
-            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
-        legend.title = element_text(size = 6),
-        legend.text = element_text(size = 6),
-        legend.position = "none",
-        legend.direction = "horizontal"#,
-        # legend.spacing.y = unit(15, "pt"),
-        )
+# temps <- lim_63_23_noaa |> 
+#     select(date, tmax, tavg, tmin) |> 
+#     filter(date>"1981-12-31") %>%
+#     mutate(week = week(date), year = year(date)) %>%
+#     group_by(year) %>%
+#     summarize(tavg_year = mean(tavg, na.rm = TRUE),
+#             tmax_year = mean(tmax, na.rm = TRUE),
+#             tmin_year = mean(tmin, na.rm = TRUE)) |> 
+#     ungroup() 
+# 
+# ggplot(temps, aes(x = year)) + 
+#     geom_line(aes(y = tmax_year), color = "red") +
+#     geom_line(aes(y = tavg_year), color = "white") +
+#     geom_line(aes(y = tmin_year), color = "blue") +
+#     scale_x_continuous(
+#         expand = c(0, 0),
+#         limits = c(1974, 2035),
+#         position = "bottom"
+#     ) +
+#     theme_void() +  # Use theme_void() as the base theme
+#     theme(
+#         text = element_text(
+#             colour = "#F9F7F3",
+#             family = "Sanchez"),
+#         plot.background = element_rect(
+#             fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
+#         panel.background = element_rect(
+#             fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
+#         axis.line = element_blank(),
+#         axis.text = element_text(size = 6), # Remove axis lines
+#         plot.caption = element_text(
+#             margin = margin(t = 20, unit = "pt"),
+#             hjust = 0, vjust = 1, size = 5, 
+#             color = "#F9F7F3", family = "Sanchez"),
+#         plot.title = element_text(
+#             margin = margin(b = 3, unit = "pt")),
+#         plot.title.position = "plot", 
+#         plot.subtitle = element_text(
+#             margin = margin(b = 10, unit = "pt"),
+#             size = 10),
+#         # axis.text.y = element_blank(),
+#         axis.text.x = element_text(
+#             size = 7
+#         ),
+#         plot.margin = margin(
+#             t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
+#         legend.title = element_text(size = 6),
+#         legend.text = element_text(size = 6),
+#         legend.position = "none",
+#         legend.direction = "horizontal"#,
+#         # legend.spacing.y = unit(15, "pt"),
+#         )
 
 ```
 
@@ -489,46 +576,46 @@ ggplot(temps, aes(x = year)) +
 ```{r fig.width=6, fig.height=8}
 #| echo: false
 # Normalize the tyear values
-min_tyear <- min(df_week$tyear)
-max_tyear <- max(df_week$tyear)
-range_tyear <- max_tyear - min_tyear
-
-df_week <- df_week %>%
-  mutate(normalized_tyear = (tyear - min_tyear) / range_tyear)
-
-# Calculate the actual average of tyear
-actual_avg_tyear <- mean(df_week$tyear)
-
-# Calculate the normalized value for the actual average
-normalized_avg_tyear <- (actual_avg_tyear - min_tyear) / range_tyear
-
-# Generate a continuous color palette function with white set at the normalized average
-color_function <- colorRamp(c("blue", "white", "red"), space = "rgb")
-
-# Apply the color function to normalized tyear values to get colors
-df_week_colored <- df_week %>%
-  mutate(color = rgb(color_function((normalized_tyear - normalized_avg_tyear) / (1 - normalized_avg_tyear) * 0.5 + 0.5), maxColorValue = 255))
-
-# Plot with the new color mapping
-plot_ly(
-    df_week_colored,
-    x = ~week,
-    y = ~tavg_week,
-    name = ~year,
-    type = 'scatter',
-    mode = 'lines',
-    line = list(
-        color = ~color,
-        shape = "spline"  # Add this to smooth the lines
-    )
-) %>%
-layout(
-    title = "Temperature by Week and Year",
-    xaxis = list(title = "Week"),
-    yaxis = list(title = "Average Temperature"),
-    paper_bgcolor = "#2D2D2D",
-    plot_bgcolor = "#2D2D2D"
-)
+# min_tyear <- min(df_week$tyear)
+# max_tyear <- max(df_week$tyear)
+# range_tyear <- max_tyear - min_tyear
+# 
+# df_week <- df_week %>%
+#   mutate(normalized_tyear = (tyear - min_tyear) / range_tyear)
+# 
+# # Calculate the actual average of tyear
+# actual_avg_tyear <- mean(df_week$tyear)
+# 
+# # Calculate the normalized value for the actual average
+# normalized_avg_tyear <- (actual_avg_tyear - min_tyear) / range_tyear
+# 
+# # Generate a continuous color palette function with white set at the normalized average
+# color_function <- colorRamp(c("blue", "white", "red"), space = "rgb")
+# 
+# # Apply the color function to normalized tyear values to get colors
+# df_week_colored <- df_week %>%
+#   mutate(color = rgb(color_function((normalized_tyear - normalized_avg_tyear) / (1 - normalized_avg_tyear) * 0.5 + 0.5), maxColorValue = 255))
+# 
+# # Plot with the new color mapping
+# plot_ly(
+#     df_week_colored,
+#     x = ~week,
+#     y = ~tavg_week,
+#     name = ~year,
+#     type = 'scatter',
+#     mode = 'lines',
+#     line = list(
+#         color = ~color,
+#         shape = "spline"  # Add this to smooth the lines
+#     )
+# ) %>%
+# layout(
+#     title = "Temperature by Week and Year",
+#     xaxis = list(title = "Week"),
+#     yaxis = list(title = "Average Temperature"),
+#     paper_bgcolor = "#2D2D2D",
+#     plot_bgcolor = "#2D2D2D"
+# )
 
 ```
 
@@ -537,23 +624,23 @@ layout(
 ```{r fig.width=6, fig.height=2}
 
 
-
-
-tavg_63_23 <-  lim_63_23_noaa |> 
-    select(date, tavg) |> 
-    pull(tavg)  |> 
-    mean()
-
-df_deviations <- lim_63_23_noaa |> 
-    select(date, tavg) |> 
-    group_by(year(date))  |> 
-    summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |> 
-    mutate(deviation = tyear - tavg_63_23)
-
-ggplot(
-    df_deviations,
-    aes(x = year, y = deviation, fill = "red")) +
-    geom_col()
+# 
+# 
+# temp_avg_63_23 <-  lim_63_23_noaa |> 
+#     select(date, tavg) |> 
+#     pull(tavg)  |> 
+#     mean()
+# 
+# df_deviations <- lim_63_23_noaa |> 
+#     select(date, tavg) |> 
+#     group_by(year(date))  |> 
+#     summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |> 
+#     mutate(deviation = tyear - temp_avg_63_23)
+# 
+# ggplot(
+#     df_deviations,
+#     aes(x = year, y = deviation, fill = "red")) +
+#     geom_col()
 
 
 ```
