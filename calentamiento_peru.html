@@ -101,50 +101,17 @@ $ date    &lt;date&gt; 1963-01-03, 1963-01-05, 1963-01-06, 1963-01-07, 1963-01-0
 </div>
 </div>
 </section>
-<section id="data-wrangling" class="level2">
-<h2 class="anchored" data-anchor-id="data-wrangling">Data wrangling</h2>
+<section id="creación-de-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="creación-de-datasets">Creación de datasets</h2>
+<section id="datasets-a-nivel-de-estación" class="level3">
+<h3 class="anchored" data-anchor-id="datasets-a-nivel-de-estación">Datasets a nivel de estación</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>daily_data <span class="ot">&lt;-</span> per_noaa_1947_2023</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>weekly_averages <span class="ot">&lt;-</span> per_noaa_1947_2023 <span class="sc">|&gt;</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">week =</span> <span class="fu">week</span>(date), </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> <span class="fu">year</span>(date)) <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        station, year, week)  <span class="sc">|&gt;</span> </span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">city =</span> <span class="fu">first</span>(city),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">prcp =</span> <span class="fu">mean</span>(prcp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">tavg =</span> <span class="fu">mean</span>(tavg, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">tmax =</span> <span class="fu">mean</span>(tmax, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">tmin =</span> <span class="fu">mean</span>(tmin, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">name =</span> <span class="fu">first</span>(name)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> <span class="fu">suppressMessages</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>yearly_averages <span class="ot">&lt;-</span> per_noaa_1947_2023 <span class="sc">|&gt;</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> <span class="fu">year</span>(date)) <span class="sc">|&gt;</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        station, year)  <span class="sc">|&gt;</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">city =</span> <span class="fu">first</span>(city),</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">prcp =</span> <span class="fu">mean</span>(prcp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">tavg =</span> <span class="fu">mean</span>(tavg, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">tmax =</span> <span class="fu">mean</span>(tmax, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">tmin =</span> <span class="fu">mean</span>(tmin, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">name =</span> <span class="fu">first</span>(name)</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> <span class="fu">suppressMessages</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ungroup</span>()</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"daily_data:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>daily_data:</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(daily_data) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 384,667
-Columns: 8
+Columns: 10
 $ city    &lt;chr&gt; "Pucallpa", "Pucallpa", "Pucallpa", "Pucallpa", "Pucallpa", "P…
 $ prcp    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
 $ tavg    &lt;dbl&gt; 25.0, 30.6, 31.7, 31.2, 29.4, 26.0, 28.3, 25.1, 23.7, 26.6, 27…
@@ -152,14 +119,13 @@ $ tmax    &lt;dbl&gt; 31.1, 35.0, 37.8, 37.2, 37.2, 36.1, NA, 33.9, 27.2, NA, 32
 $ tmin    &lt;dbl&gt; 22.2, 22.2, 22.2, 22.8, 22.2, 22.8, 21.1, 22.8, 22.2, 21.1, 22…
 $ station &lt;chr&gt; "PEM00084515", "PEM00084515", "PEM00084515", "PEM00084515", "P…
 $ name    &lt;chr&gt; "CAP FAP DAVID ABENZUR RENGIFO, PE", "CAP FAP DAVID ABENZUR RE…
-$ date    &lt;date&gt; 1963-01-03, 1963-01-05, 1963-01-06, 1963-01-07, 1963-01-08, 1…</code></pre>
+$ date    &lt;date&gt; 1963-01-03, 1963-01-05, 1963-01-06, 1963-01-07, 1963-01-08, 1…
+$ week    &lt;dbl&gt; 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4,…
+$ year    &lt;dbl&gt; 1963, 1963, 1963, 1963, 1963, 1963, 1963, 1963, 1963, 1963, 19…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"weekly_averages:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>weekly_averages:</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(weekly_averages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 63,088
 Columns: 9
@@ -173,12 +139,9 @@ $ tmax    &lt;dbl&gt; 31.00000, 28.00000, 33.00000, 29.50000, 34.00000, 32.20000
 $ tmin    &lt;dbl&gt; 23.16667, 22.40000, 23.00000, 22.66667, 22.80000, 23.42857, 24…
 $ name    &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "I…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"yearly_averages:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>yearly_averages:</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(yearly_averages)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1,328
 Columns: 8
@@ -191,46 +154,66 @@ $ tmax    &lt;dbl&gt; 32.07778, 31.55446, 31.51923, 31.44828, 31.11957, 31.73659
 $ tmin    &lt;dbl&gt; 22.37069, 21.59500, 21.79654, 21.57237, 21.90419, 21.91843, 22…
 $ name    &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "I…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="temperatura-promedio-1947-2023" class="level3">
-<h3 class="anchored" data-anchor-id="temperatura-promedio-1947-2023">Temperatura promedio 1947-2023</h3>
+</section>
+<section id="datasets-a-nivel-nacional" class="level3">
+<h3 class="anchored" data-anchor-id="datasets-a-nivel-nacional">Datasets a nivel nacional</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hallar temperatura promedio 1947-2023</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>temp_avg_63_23 <span class="ot">&lt;-</span>  per_noaa_1947_2023 <span class="sc">|&gt;</span> </span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"Lima - Callao"</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>           date <span class="sc">&gt;</span> <span class="st">"1962-12-31"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(date, tavg) <span class="sc">|&gt;</span> </span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(<span class="fu">year</span>(date)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">tyear =</span> <span class="fu">mean</span>(tavg, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pull</span>(tyear) <span class="sc">%&gt;%</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>()</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>temp_avg_63_23</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>daily_data_national:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 21,198
+Columns: 7
+$ date &lt;date&gt; 1946-12-22, 1946-12-23, 1946-12-24, 1946-12-25, 1946-12-26, 1946…
+$ prcp &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …
+$ tavg &lt;dbl&gt; 14.2, 14.7, 14.3, 14.4, 13.8, 12.8, 14.0, 15.0, 14.8, 14.0, 15.8,…
+$ tmax &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …
+$ tmin &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …
+$ week &lt;dbl&gt; 51, 51, 52, 52, 52, 52, 52, 52, 52, 53, 1, 1, 1, 1, 1, 1, 1, 2, 2…
+$ year &lt;dbl&gt; 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1947,…</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>weekly_averages_national:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 3,123
+Columns: 6
+$ year &lt;dbl&gt; 1946, 1946, 1946, 1947, 1947, 1947, 1947, 1947, 1947, 1947, 1947,…
+$ week &lt;dbl&gt; 51, 52, 53, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…
+$ prcp &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …
+$ tavg &lt;dbl&gt; 14.45000, 14.15714, 14.00000, 14.95714, 15.64286, 15.22857, 14.71…
+$ tmax &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …
+$ tmin &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>yearly_averages_national:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 61
+Columns: 5
+$ year &lt;dbl&gt; 1946, 1947, 1948, 1963, 1964, 1965, 1966, 1967, 1968, 1969, 1973,…
+$ prcp &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 2.672863, 2.161…
+$ tavg &lt;dbl&gt; 14.20000, 16.62082, 14.69833, 20.67914, 20.42520, 21.05088, 20.67…
+$ tmax &lt;dbl&gt; NaN, NaN, 21.10000, 26.37164, 26.09817, 26.34497, 26.18703, 25.38…
+$ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13.360…</code></pre>
+</div>
+</div>
+</section>
+<section id="temperaturas-promedio" class="level3">
+<h3 class="anchored" data-anchor-id="temperaturas-promedio">Temperaturas promedio</h3>
+<section id="temperatura-promedio-1947-2023---nacional" class="level4">
+<h4 class="anchored" data-anchor-id="temperatura-promedio-1947-2023---nacional">Temperatura promedio 1947-2023 - Nacional</h4>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 19.51626</code></pre>
 </div>
 </div>
 </section>
+</section>
 <section id="section" class="level3">
 <h3 class="anchored" data-anchor-id="section"></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># df_all &lt;- per_noaa_1947_2023 |&gt; </span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     filter(city == "Lima - Callao",</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#            date &gt; "1962-12-31")  |&gt; </span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg)</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>rain <span class="ot">&lt;-</span> per_noaa_1947_2023 <span class="sc">|&gt;</span> </span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"Lima - Callao"</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>           date <span class="sc">&gt;</span> <span class="st">"1962-12-31"</span>)  <span class="sc">|&gt;</span> </span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(date, prcp) <span class="sc">|&gt;</span> </span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date<span class="sc">&gt;</span><span class="st">"1981-12-31"</span>)</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> per_noaa_1947_2023 <span class="sc">|&gt;</span> </span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(city <span class="sc">==</span> <span class="st">"Lima - Callao"</span>,</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>           date <span class="sc">&gt;</span> <span class="st">"1962-12-31"</span>)  <span class="sc">|&gt;</span> </span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(date, tavg) <span class="sc">|&gt;</span> </span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(date<span class="sc">&gt;</span><span class="st">"1981-12-31"</span>)</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 14,523 × 2
    date        tavg
@@ -282,44 +265,7 @@ $ name    &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE"
 <h1>Heatmaps semanales</h1>
 <section id="plot-base" class="level2">
 <h2 class="anchored" data-anchor-id="plot-base">Plot base</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>theme_heatmap <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_void</span>() <span class="sc">+</span>  <span class="co"># Use theme_void() as the base theme</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">text =</span> <span class="fu">element_text</span>(</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">colour =</span> <span class="st">"#F9F7F3"</span>,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">fill =</span> <span class="st">"#2D2D2D"</span>, <span class="at">color =</span> <span class="cn">NA</span>),  <span class="co"># #2D2D2D plot background</span></span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background =</span> <span class="fu">element_rect</span>(</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">fill =</span> <span class="st">"#2D2D2D"</span>, <span class="at">color =</span> <span class="cn">NA</span>),  <span class="co"># #2D2D2D panel background</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.line =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>), <span class="co"># Remove axis lines</span></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.caption =</span> <span class="fu">element_text</span>(</span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">t =</span> <span class="dv">20</span>, <span class="at">unit =</span> <span class="st">"pt"</span>),</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">5</span>, </span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title =</span> <span class="fu">element_text</span>(</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">3</span>, <span class="at">unit =</span> <span class="st">"pt"</span>)),</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title.position =</span> <span class="st">"plot"</span>, </span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(</span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">10</span>, <span class="at">unit =</span> <span class="st">"pt"</span>),</span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">10</span>),</span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(</span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>            <span class="at">size =</span> <span class="dv">7</span></span>
-<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(</span>
-<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">t =</span> <span class="dv">10</span>, <span class="at">r =</span> <span class="dv">10</span>, <span class="at">b =</span> <span class="dv">10</span>, <span class="at">l =</span> <span class="dv">10</span>, <span class="at">unit =</span> <span class="st">"pt"</span>), </span>
-<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>),</span>
-<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>),</span>
-<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.87</span>, <span class="sc">-</span><span class="fl">0.1</span>),</span>
-<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.direction =</span> <span class="st">"horizontal"</span><span class="co">#,</span></span>
-<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>        <span class="co"># legend.spacing.y = unit(15, "pt"),</span></span>
-<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Creamos una función para hacer el heatmap base</p>
+<p>Creamos una función para hacer el heatmap base:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>make_base_weekly_heatmap():</code></pre>
@@ -329,25 +275,32 @@ $ name    &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE"
 NULL</code></pre>
 </div>
 </div>
+<p>Aplicamos la función a Lima - Callao del 82 en adelante:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">make_base_weekly_heatmap</span>(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekly_dataset =</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(weekly_averages,</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>               year <span class="sc">&gt;</span> <span class="dv">1981</span>,</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>               city <span class="sc">==</span> <span class="st">"Lima - Callao"</span>),</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">custom_breaks =</span> <span class="fu">c</span>(<span class="dv">1990</span>, <span class="dv">2000</span>, <span class="dv">2010</span>, <span class="dv">2020</span>),</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">custom_limits =</span> <span class="fu">c</span>(<span class="dv">1974</span>, <span class="dv">2035</span>))</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the plot</span></span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/create_baselpot-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
+<p>Estilizamos:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/stylize_plot-1.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+</section>
+<section id="heatmaps-nacionales---escala-fija" class="level2">
+<h2 class="anchored" data-anchor-id="heatmaps-nacionales---escala-fija">Heatmaps nacionales - Escala fija</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly-1.png" class="img-fluid" width="768"></p>
+</div>
+</div>
+</section>
+<section id="heatmaps-nacionales---escala-libre" class="level2">
+<h2 class="anchored" data-anchor-id="heatmaps-nacionales---escala-libre">Heatmaps nacionales - Escala libre</h2>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly_free-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>
@@ -386,23 +339,23 @@ NULL</code></pre>
 <section id="desviación-del-promedio" class="level1">
 <h1>Desviación del promedio</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># temp_avg_63_23 &lt;-  lim_63_23_noaa |&gt; </span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     pull(tavg)  |&gt; </span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     mean()</span></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="co"># df_deviations &lt;- lim_63_23_noaa |&gt; </span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     group_by(year(date))  |&gt; </span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |&gt; </span></span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(deviation = tyear - temp_avg_63_23)</span></span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(</span></span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     df_deviations,</span></span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     aes(x = year, y = deviation, fill = "red")) +</span></span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_col()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># temp_avg_63_23 &lt;-  lim_63_23_noaa |&gt; </span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     pull(tavg)  |&gt; </span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     mean()</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># df_deviations &lt;- lim_63_23_noaa |&gt; </span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     group_by(year(date))  |&gt; </span></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |&gt; </span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(deviation = tyear - temp_avg_63_23)</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     df_deviations,</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     aes(x = year, y = deviation, fill = "red")) +</span></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_col()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 

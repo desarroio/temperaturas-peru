@@ -7,6 +7,7 @@ library(readr)
 library(tidyverse)
 library(lubridate)
 library(plotly)
+library(patchwork)
 ```
 
 ## Cargar datos de NOAA
@@ -19,15 +20,17 @@ load("data/per_noaa_1947_2023.RData")
 glimpse(per_noaa_1947_2023)
 ```
 
-## Data wrangling 
+## Creación de datasets 
 
+### Datasets a nivel de estación
 ```{r wrangling_databases}
-daily_data <- per_noaa_1947_2023
-
-weekly_averages <- per_noaa_1947_2023 |>
+#| echo: false
+daily_data <- per_noaa_1947_2023 |>
     mutate(
         week = week(date), 
-        year = year(date)) |>
+        year = year(date))
+
+weekly_averages <- daily_data |>
     group_by(
         station, year, week)  |> 
     summarize(
@@ -40,9 +43,7 @@ weekly_averages <- per_noaa_1947_2023 |>
         ) |> suppressMessages() |> 
     ungroup()
 
-yearly_averages <- per_noaa_1947_2023 |>
-    mutate(
-        year = year(date)) |>
+yearly_averages <- daily_data |> 
     group_by(
         station, year)  |>
     summarize(
@@ -66,11 +67,64 @@ cat("\n")
 cat("yearly_averages:\n")
 glimpse(yearly_averages)
 cat("\n")
-
 ```
 
-### Temperatura promedio 1947-2023
+### Datasets a nivel nacional
+```{r wrangling_national}
+#| echo: false
+daily_data_national <- daily_data |> 
+    group_by(date) |>
+    summarize(
+        prcp = mean(prcp, na.rm = TRUE),
+        tavg = mean(tavg, na.rm = TRUE),
+        tmax = mean(tmax, na.rm = TRUE),
+        tmin = mean(tmin, na.rm = TRUE)
+        ) |> suppressMessages() |> 
+    ungroup() |> 
+    mutate(
+        week = week(date), 
+        year = year(date))
+
+weekly_averages_national <- daily_data_national |>
+    group_by(
+        year, week) |> 
+    summarize(
+        prcp = mean(prcp, na.rm = TRUE),
+        tavg = mean(tavg, na.rm = TRUE),
+        tmax = mean(tmax, na.rm = TRUE),
+        tmin = mean(tmin, na.rm = TRUE)
+        ) |> suppressMessages() |> 
+    ungroup()
+
+yearly_averages_national <- daily_data_national |>
+    group_by(
+        year)  |>
+    summarize(
+        prcp = mean(prcp, na.rm = TRUE),
+        tavg = mean(tavg, na.rm = TRUE),
+        tmax = mean(tmax, na.rm = TRUE),
+        tmin = mean(tmin, na.rm = TRUE),
+        ) |> suppressMessages() |> 
+    ungroup()
+
+cat("daily_data_national:\n")
+glimpse(daily_data_national) 
+cat("\n")
+
+cat("weekly_averages_national:\n")
+glimpse(weekly_averages_national)
+cat("\n")
+
+cat("yearly_averages_national:\n")
+glimpse(yearly_averages_national)
+cat("\n")
+```
+
+### Temperaturas promedio
+
+#### Temperatura promedio 1947-2023 - Nacional
 ```{r temp_promedio}
+#| echo: false
 # Hallar temperatura promedio 1947-2023
 temp_avg_63_23 <-  per_noaa_1947_2023 |> 
     filter(city == "Lima - Callao",
@@ -85,6 +139,8 @@ temp_avg_63_23
 
 ### 
 ```{r wrangling}
+#| echo: false
+
 # df_all <- per_noaa_1947_2023 |> 
 #     filter(city == "Lima - Callao",
 #            date > "1962-12-31")  |> 
@@ -142,6 +198,8 @@ df_week
 ## Plot base
 
 ```{r theme_heatmap}
+#| echo: false
+
 theme_heatmap <- function() {
     theme_void() +  # Use theme_void() as the base theme
     theme(
@@ -179,7 +237,7 @@ theme_heatmap <- function() {
 }
 ```
 
-Creamos una función para hacer el heatmap base
+Creamos una función para hacer el heatmap base:
 ```{r fun_weekly_heatmap, fig.width=6, fig.height=6}
 #| echo: false
 
@@ -225,8 +283,10 @@ cat("make_base_weekly_heatmap():\n")
 args(make_base_weekly_heatmap)
 ```
 
-
+Aplicamos la función a Lima - Callao del 82 en adelante:
 ```{r create_baselpot, fig.width=6, fig.height=6}
+#| echo: false
+
 p <- make_base_weekly_heatmap(
     weekly_dataset = 
         filter(weekly_averages,
@@ -240,6 +300,7 @@ p <- make_base_weekly_heatmap(
 print(p)
 ```
 
+Estilizamos:
 ```{r stylize_plot, fig.width=6, fig.height=6}
 #| echo: false
 heatmap <- p +
@@ -306,6 +367,63 @@ ggsave("outputs/heatmap.png") |> suppressMessages()
 ggsave("outputs/heatmap.svg") |> suppressMessages()
 
 print(heatmap)
+```
+
+
+## Heatmaps nacionales - Escala fija
+
+```{r national_heatmap_weekly, fig.width=8, fig.height=20}
+#| echo: false
+
+p <- make_base_weekly_heatmap(
+    weekly_dataset = 
+        filter(weekly_averages,
+               year > 1981,
+               city %in% c("Arequipa", "Chiclayo",      "Cusco",    "Iquitos", 
+                           "Juliaca",  "Lima - Callao", "Pisco",    "Piura", 
+                           "Pucallpa", "Tacna",         "Trujillo", "Tumbes"
+                           )),
+    custom_breaks = c(1990, 2000, 2010, 2020),
+    custom_limits = c(1974, 2035)) + 
+    facet_wrap(~ city, ncol = 2, scales = "free") +
+    theme(
+        plot.title = element_blank(),
+        plot.subtitle = element_blank()
+    )
+
+
+p
+```
+## Heatmaps nacionales - Escala libre
+
+```{r national_heatmap_weekly_free, fig.width=8, fig.height=20}
+#| echo: false
+selected_stations <- filter(weekly_averages,
+               year > 1981,
+               city %in% c("Arequipa", "Chiclayo",      "Cusco",    "Iquitos", 
+                           "Juliaca",  "Lima - Callao", "Pisco",    "Piura", 
+                           "Pucallpa", "Tacna",         "Trujillo", "Tumbes"
+                           ))
+    
+    
+unique_cities <- unique(selected_stations$city)
+plots <- lapply(unique_cities, function(ciudad) {
+    df_subset <- filter(selected_stations,
+                        city == ciudad)
+    make_base_weekly_heatmap(df_subset, 
+                             custom_breaks = c(1990, 2000, 2010, 2020), 
+                             custom_limits = c(1974, 2035)) +
+    theme(
+        plot.title = element_blank(),
+        plot.subtitle = element_blank(),
+        plot.caption = element_blank()
+    )
+})
+
+
+plot_combined <- wrap_plots(plots, ncol = 2)  # Adjust ncol as needed
+
+plot_combined
 ```
 
 # Lluvias
