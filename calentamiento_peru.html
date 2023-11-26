@@ -275,33 +275,33 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 </section>
 <section id="heatmaps-lima" class="level1">
 <h1>Heatmaps Lima</h1>
-<section id="plot-base" class="level2">
-<h2 class="anchored" data-anchor-id="plot-base">Plot base</h2>
-<ul>
-<li>Creamos un theme</li>
-</ul>
-<ul>
-<li>Creamos una función para hacer el heatmap base:</li>
-</ul>
+<section id="creamos-un-theme" class="level2">
+<h2 class="anchored" data-anchor-id="creamos-un-theme">1. Creamos un theme</h2>
+</section>
+<section id="creamos-una-función-para-hacer-el-heatmap-base" class="level2">
+<h2 class="anchored" data-anchor-id="creamos-una-función-para-hacer-el-heatmap-base">2. Creamos una función para hacer el heatmap base:</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>make_base_weekly_heatmap():</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>function (weekly_dataset, custom_breaks_years = waiver(), custom_limits = waiver(), 
-    custom_breaks_fill = waiver(), custom_labels_fill = waiver()) 
+<pre><code>function (weekly_dataset, medicion, custom_breaks_years = waiver(), 
+    custom_limits = waiver(), custom_breaks_fill = waiver(), 
+    custom_labels_fill = waiver(), color_palette = "RdBu", fill_direction = 1) 
 NULL</code></pre>
 </div>
 </div>
-<p>Usamos la función para crear heatmap de Lima - Callao del 82 en adelante:</p>
+</section>
+<section id="usamos-la-función-para-crear-heatmap-de-lima---callao-del-82-en-adelante" class="level2">
+<h2 class="anchored" data-anchor-id="usamos-la-función-para-crear-heatmap-de-lima---callao-del-82-en-adelante">3. Usamos la función para crear heatmap de Lima - Callao del 82 en adelante:</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/create_baselpot-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
-<ul>
-<li>Creamos una lista de anotaciones</li>
-</ul>
+</section>
+<section id="creamos-una-lista-de-anotaciones" class="level2">
+<h2 class="anchored" data-anchor-id="creamos-una-lista-de-anotaciones">4. Creamos una lista de anotaciones</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>annotations_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicio de año</span></span>
@@ -368,7 +368,7 @@ NULL</code></pre>
 <h2 class="anchored" data-anchor-id="lluvia-heatmap">Lluvia heatmap</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="calentamiento_peru_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="576"></p>
+<p><img src="calentamiento_peru_files/figure-html/national_rainmap_weekly-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
 </section>

@@ -201,9 +201,8 @@ df_week
 
 # Heatmaps Lima
 
-## Plot base
-
- - Creamos un theme
+## 1. Creamos un theme
+ 
 ```{r theme_heatmap}
 #| echo: false
 
@@ -245,55 +244,59 @@ theme_heatmap <- function() {
 }
 ```
 
- - Creamos una función para hacer el heatmap base:
+## 2. Creamos una función para hacer el heatmap base:
 ```{r fun_weekly_heatmap, fig.width=6, fig.height=6}
 #| echo: false
 
 make_base_weekly_heatmap <- function(weekly_dataset,
+                                     medicion,
                                      custom_breaks_years = waiver(),
                                      custom_limits = waiver(),
                                      custom_breaks_fill = waiver(),
-                                     custom_labels_fill = waiver()
+                                     custom_labels_fill = waiver(),
+                                     color_palette = "RdBu",
+                                     fill_direction = 1
                                      ) {
     ggplot(
         weekly_dataset,
-        aes(x = year, y = week, fill = tavg)) +
-        
-        geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
+        aes(x = year, y = week, fill = {{ medicion }})
+        ) +
+        geom_tile(colour = "#2D2D2D"  # Use geom_tile() instead of geom_raster() for better control
+                  ) + 
         scale_x_continuous(
             expand = c(0, 0),
             breaks = custom_breaks_years,
             limits = custom_limits,
             position = "bottom"
-        ) + 
-    scale_y_reverse(
-        expand = c(0, 0),
-        breaks = c(52, 3),
-        # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
-        limits = c(54, -5)
-        ) +
-    scale_fill_distiller(
-        palette = "RdBu", 
-        direction = -1,
-        breaks = custom_breaks_fill,
-        labels = custom_labels_fill
-    ) + 
-    labs(
-        x = "Año",
-        y = "Semana",
-        title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
-        subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte",
-        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
-        fill = "") + 
-    guides(fill = guide_colourbar(barheight = unit(0.075, "inches"))) +
-    theme_heatmap()
+            ) +
+        scale_y_reverse(
+            expand = c(0, 0),
+            breaks = c(52, 3),
+            # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
+            limits = c(54, -5)
+            ) +
+        scale_fill_distiller(
+            palette = color_palette, 
+            direction = fill_direction,
+            breaks = custom_breaks_fill,
+            labels = custom_labels_fill
+            ) + 
+        labs(
+            x = "Año",
+            y = "Semana",
+            title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
+            subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte",
+            caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
+            fill = "") + 
+        guides(fill = guide_colourbar(barheight = unit(0.075, "inches"))) +
+        theme_heatmap()
 }
 
 cat("make_base_weekly_heatmap():\n")
 args(make_base_weekly_heatmap)
 ```
 
-Usamos la función para crear heatmap de Lima - Callao del 82 en adelante:
+## 3. Usamos la función para crear heatmap de Lima - Callao del 82 en adelante:
 ```{r create_baselpot, fig.width=6, fig.height=6}
 #| echo: false
 
@@ -302,10 +305,13 @@ p_base <- make_base_weekly_heatmap(
         filter(weekly_averages,
                year > 1981,
                city == "Lima - Callao"),
+    medicion = tavg,
     custom_breaks_years = c(1990, 2000, 2010, 2020),
     custom_limits = c(1974, 2035),
     custom_breaks_fill = c(15, 20, 25),
-    custom_labels_fill = c("15 °C", "20 °C ", "25 °C")
+    custom_labels_fill = c("15 °C", "20 °C ", "25 °C"),
+    color_palette = "RdBu",
+    fill_direction = -1
     )
 
 
@@ -313,7 +319,7 @@ p_base <- make_base_weekly_heatmap(
 print(p_base)
 ```
 
-- Creamos una lista de anotaciones
+## 4. Creamos una lista de anotaciones
 
 ```{r annotation_list}
 annotations_list <- list(
@@ -377,8 +383,12 @@ p_heatmaps_costa_fija <- make_base_weekly_heatmap(
             year > 1981,
             city %in% c("Pisco",    "Tumbes",        "Piura",    "Chiclayo",
                         "Trujillo", "Lima - Callao", "Tacna")),
+    medicion = tavg,
     custom_breaks_years = c(1990, 2000, 2010, 2020),
-    custom_limits = c(1974, 2035)) + 
+    custom_limits = c(1974, 2035),
+    color_palette = "RdBu",
+    fill_direction = -1
+    ) + 
     facet_wrap(~ city, 
                ncol = 1#, scales = "free"
                ) +
@@ -405,7 +415,8 @@ unique_cities <- unique(selected_stations$city)
 plots <- lapply(unique_cities, function(ciudad) {
     df_subset <- filter(selected_stations, city == ciudad)
     make_base_weekly_heatmap(df_subset, 
-                             custom_breaks_years = c(1990, 2000, 2010, 2020), 
+                             tavg,
+                             custom_breaks_years = c(1990, 2000, 2010, 2020),
                              custom_limits = c(1974, 2035)) +
         labs(title = ciudad) +  # Set the title to the current city
     theme(
@@ -425,79 +436,32 @@ plot_combined
 # Lluvias
 
 ## Lluvia heatmap
-```{r fig.width=6, fig.height=6}
+```{r national_rainmap_weekly, fig.width=8, fig.height=40}
 #| echo: false
-p_rain <- ggplot(rain_week, aes(x = year, y = week, fill = rain_week)) +
-    geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
-    scale_x_continuous(
-        expand = c(0, 0),
-        breaks = c(1990, 2000, 2010, 2020),
-        limits = c(1974, 2035),
-        position = "bottom"
-        ) + 
-    # scale_y_continuous(
-    #     ) +  # Remove space for y axis
-    scale_y_reverse(
-        expand = c(0, 0),
-        breaks = c(52, 3),
-        # labels = c("Última\nsemana\ndel año", "Primera\nsemana\ndel año"),
-        limits = c(54, -5)
-        ) +
-    scale_fill_distiller(
-        palette = "Blues", 
-        direction = -1,
-        breaks = c(15, 20, 25),
-        labels = c("15 °C", "20 °C ", "25 °C")) +
-    labs(
-        x = "Año",
-        y = "Semana",
-        title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
-        subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte"
-    )  +
-    labs(
-        caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nNo hay datos disponibles para los años 2013 ni 2014. Promedios semanales calculados a partir de las temperaturas\ndiarias promedio",
-        fill = ""
-        ) +
-    theme_void() +  # Use theme_void() as the base theme
+
+p_rainmaps_costa_fija <- make_base_weekly_heatmap(
+    weekly_dataset = 
+        filter(
+            weekly_averages,
+            year > 1981,
+            city %in% c("Pisco",    "Tumbes",        "Piura",    "Chiclayo",
+                        "Trujillo", "Lima - Callao", "Tacna")),
+    prcp,
+    custom_breaks_years = c(1990, 2000, 2010, 2020),
+    custom_limits = c(1974, 2035),
+    color_palette = "Blues",
+    fill_direction = 1
+    ) + 
+    facet_wrap(~ city, 
+               ncol = 1#, scales = "free"
+               ) +
     theme(
-        text = element_text(
-            colour = "#F9F7F3",
-            family = "Sanchez"),
-        plot.background = element_rect(
-            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
-        panel.background = element_rect(
-            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
-        axis.line = element_blank(),
-        axis.text = element_text(size = 6), # Remove axis lines
-        plot.caption = element_text(
-            margin = margin(t = 20, unit = "pt"),
-            hjust = 0, vjust = 1, size = 5, 
-            color = "#F9F7F3", family = "Sanchez"),
-        plot.title = element_text(
-            margin = margin(b = 3, unit = "pt")),
-        plot.title.position = "plot", 
-        plot.subtitle = element_text(
-            margin = margin(b = 10, unit = "pt"),
-            size = 10),
-        axis.text.y = element_blank(),
-        axis.text.x = element_text(
-            size = 7
-        ),
-        plot.margin = margin(
-            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
-        legend.title = element_text(size = 6),
-        legend.text = element_text(size = 6),
-        legend.position = c(0.87, -0.1),
-        legend.direction = "horizontal"#,
-        # legend.spacing.y = unit(15, "pt"),
-        ) +
-    # guides(fill = guide_colourbar(barwidth = unit(0.075, "inches"))) +
-        guides(fill = guide_colourbar(barheight = unit(0.075, "inches")))
+        plot.title = element_blank(),
+        plot.subtitle = element_blank()
+    ) + 
+    annotations_list
 
-
-# Print the plot
-print(p_rain)
-
+p_rainmaps_costa_fija
 ```
 
 
