@@ -167,10 +167,23 @@ $ tmax    &lt;dbl&gt; 32.07778, 31.55446, 31.51923, 31.44828, 31.11957, 31.73659
 $ tmin    &lt;dbl&gt; 22.37069, 21.59500, 21.79654, 21.57237, 21.90419, 21.91843, 22…
 $ name    &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "I…</code></pre>
 </div>
+<div class="cell-output cell-output-stdout">
+<pre><code>yearly_averages_corrected:</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,464
+Columns: 6
+$ station       &lt;chr&gt; "PE000084377", "PE000084377", "PE000084377", "PE00008437…
+$ year          &lt;dbl&gt; 1946, 1947, 1948, 1963, 1964, 1965, 1966, 1967, 1968, 19…
+$ city          &lt;chr&gt; "Iquitos", "Iquitos", "Iquitos", "Iquitos", "Iquitos", "…
+$ name          &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, P…
+$ missing_weeks &lt;int&gt; 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 1, 1, 2, 1, 1, 1…
+$ tavg          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 26.38394, 26.111…</code></pre>
+</div>
 </div>
 </section>
-<section id="datasets-a-nivel-nacional" class="level2">
-<h2 class="anchored" data-anchor-id="datasets-a-nivel-nacional">Datasets a nivel nacional</h2>
+<section id="datasets-a-nivel-nacional---agregar-estaciones-es-un-mal-promedio" class="level2">
+<h2 class="anchored" data-anchor-id="datasets-a-nivel-nacional---agregar-estaciones-es-un-mal-promedio">Datasets a nivel nacional - Agregar estaciones es un mal promedio</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>daily_data_national:</code></pre>
@@ -251,8 +264,6 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 <div class="cell">
 <div class="cell-output cell-output-stderr">
 <pre><code>`summarise()` has grouped output by 'year'. You can override using the
-`.groups` argument.
-`summarise()` has grouped output by 'year'. You can override using the
 `.groups` argument.</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
@@ -303,38 +314,38 @@ NULL</code></pre>
 <section id="creamos-una-lista-de-anotaciones" class="level2">
 <h2 class="anchored" data-anchor-id="creamos-una-lista-de-anotaciones">4. Creamos una lista de anotaciones</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>annotations_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicio de año</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">1981</span>, <span class="at">y =</span> <span class="fl">3.5</span>, </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Semana 1</span><span class="sc">\n</span><span class="st">de 1982"</span>, </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1981</span>, <span class="at">y =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1979</span>, <span class="at">yend =</span> <span class="dv">3</span>),</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Última semana</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2023.2</span>, <span class="at">y =</span> <span class="dv">46</span>, <span class="at">xend =</span> <span class="fl">2024.5</span>, <span class="at">yend =</span> <span class="dv">48</span>),</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2025</span>, <span class="at">y =</span> <span class="dv">47</span>,</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Semana 45</span><span class="sc">\n</span><span class="st">de 2023"</span>,</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 83</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1982.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">82/83"</span>, </span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 98</span></span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1997.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">97/98"</span>, </span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 23</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2024.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"¿Niño</span><span class="sc">\n</span><span class="st">23/24?"</span>, </span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>)</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>annotations_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicio de año</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">1981</span>, <span class="at">y =</span> <span class="fl">3.5</span>, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Semana 1</span><span class="sc">\n</span><span class="st">de 1982"</span>, </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1981</span>, <span class="at">y =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1979</span>, <span class="at">yend =</span> <span class="dv">3</span>),</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Última semana</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2023.2</span>, <span class="at">y =</span> <span class="dv">46</span>, <span class="at">xend =</span> <span class="fl">2024.5</span>, <span class="at">yend =</span> <span class="dv">48</span>),</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2025</span>, <span class="at">y =</span> <span class="dv">47</span>,</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Semana 45</span><span class="sc">\n</span><span class="st">de 2023"</span>,</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 83</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1982.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">82/83"</span>, </span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 98</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1997.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">97/98"</span>, </span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 23</span></span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2024.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"¿Niño</span><span class="sc">\n</span><span class="st">23/24?"</span>, </span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>)</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
 <li>Estilizamos:</li>
@@ -360,17 +371,7 @@ NULL</code></pre>
 <p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly_free-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-</section>
-</section>
-<section id="lluvias" class="level1">
-<h1>Lluvias</h1>
-<section id="lluvia-heatmap" class="level2">
-<h2 class="anchored" data-anchor-id="lluvia-heatmap">Lluvia heatmap</h2>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="calentamiento_peru_files/figure-html/national_rainmap_weekly-1.png" class="img-fluid" width="768"></p>
-</div>
-</div>
+<p>Heat stripes</p>
 </section>
 </section>
 <section id="smooth" class="level1">
@@ -382,23 +383,23 @@ NULL</code></pre>
 <section id="desviación-del-promedio" class="level1">
 <h1>Desviación del promedio</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># temp_avg_63_23 &lt;-  lim_63_23_noaa |&gt; </span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     pull(tavg)  |&gt; </span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     mean()</span></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># df_deviations &lt;- lim_63_23_noaa |&gt; </span></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     group_by(year(date))  |&gt; </span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |&gt; </span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(deviation = tyear - temp_avg_63_23)</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(</span></span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     df_deviations,</span></span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     aes(x = year, y = deviation, fill = "red")) +</span></span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_col()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># temp_avg_63_23 &lt;-  lim_63_23_noaa |&gt; </span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co">#     pull(tavg)  |&gt; </span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     mean()</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="co"># df_deviations &lt;- lim_63_23_noaa |&gt; </span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(date, tavg) |&gt; </span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     group_by(year(date))  |&gt; </span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     summarize(year = year(date), tyear = mean(tavg, na.rm = TRUE))  |&gt; </span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(deviation = tyear - temp_avg_63_23)</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="co">#     df_deviations,</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co">#     aes(x = year, y = deviation, fill = "red")) +</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="co">#     geom_col()</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 

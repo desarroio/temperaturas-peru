@@ -42,7 +42,7 @@ weekly_averages <- daily_data |>
     summarize(
         city = first(city),
         prcp = mean(prcp, na.rm = TRUE),
-        tavg = mean(tavg, na.rm = TRUE),
+        tavg = mean(tavg, na.rm = TRUE), # Chequeado que no hay NAs
         tmax = mean(tmax, na.rm = TRUE),
         tmin = mean(tmin, na.rm = TRUE),
         name = first(name)) |> 
@@ -62,6 +62,49 @@ yearly_averages <- daily_data |>
     suppressMessages() |> 
     ungroup()
 
+
+# Filter missing weeks
+
+# Create a mapping of stations to cities
+station_city_mapping <- daily_data |>
+    select(station, city, name) |> 
+    distinct()
+
+# Generate a complete set of weeks for each year and station
+complete_weeks <- expand.grid(
+  year = unique(year(daily_data$date)),
+  week = 1:53,  # Assuming up to 53 weeks in a year
+  station = unique(daily_data$station)
+)
+
+# Merge complete weeks with station-city mapping
+daily_data_complete <- complete_weeks  |> 
+    left_join(station_city_mapping, by = "station")  |> 
+    left_join(daily_data |> select(-city, -name), by = c("station", "year", "week"))
+
+
+# Proceed with the pipeline
+
+yearly_averages_corrected <- daily_data_complete |> 
+    group_by(station, year, week) |> 
+    summarize(
+        city = first(city),
+        name = first(name),
+        days_present = sum(!is.na(date)),
+        tavg = mean(tavg, na.rm = TRUE),
+        .groups = "drop"
+        ) |> 
+    group_by(station, year) |> 
+    summarize(
+        city = first(city),
+        name = first(name),
+        missing_weeks = sum(days_present < 3, na.rm = TRUE),
+        tavg = if_else(missing_weeks > 4, NA_real_, mean(tavg, na.rm = TRUE))
+        ) |> 
+    suppressMessages() |> 
+    ungroup()
+
+
 cat("daily_data:\n")
 glimpse(daily_data) 
 cat("\n")
@@ -73,9 +116,13 @@ cat("\n")
 cat("yearly_averages:\n")
 glimpse(yearly_averages)
 cat("\n")
+
+cat("yearly_averages_corrected:\n")
+glimpse(yearly_averages_corrected)
+cat("\n")
 ```
 
-## Datasets a nivel nacional
+## Datasets a nivel nacional - Agregar estaciones es un mal promedio
 ```{r wrangling_national}
 #| echo: false
 daily_data_national <- daily_data |> 
@@ -147,17 +194,6 @@ temp_avg_63_23
 ```{r wrangling}
 #| echo: false
 
-# df_all <- per_noaa_1947_2023 |> 
-#     filter(city == "Lima - Callao",
-#            date > "1962-12-31")  |> 
-#     select(date, tavg)
-
-rain <- per_noaa_1947_2023 |> 
-    filter(city == "Lima - Callao",
-           date > "1962-12-31")  |> 
-    select(date, prcp) |> 
-    filter(date>"1981-12-31")
-
 df <- per_noaa_1947_2023 |> 
     filter(city == "Lima - Callao",
            date > "1962-12-31")  |> 
@@ -184,18 +220,6 @@ df_week <- df %>%
   group_by(year) %>%
   mutate(tyear = mean(tavg_week)) %>%
   ungroup()
-
-rain_week <- rain %>%
-  mutate(week = week(date), year = year(date)) %>%
-  group_by(year, week) %>%
-  summarize(rain_week = mean(prcp, na.rm = TRUE)) %>%
-  ungroup() %>%
-  group_by(year) %>%
-  mutate(rain_year = mean(rain_week, na.rm = TRUE)) %>%
-  ungroup()
-
-
-
 df_week
 ```
 
@@ -434,6 +458,10 @@ plot_combined
 ```
 
 
+Heat stripes
+```{r}
+
+```
 
 
 
