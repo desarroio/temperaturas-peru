@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>calentamiento_peru</title>
+<title>Temperaturas y lluvias</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -63,10 +63,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="calentamiento_peru_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="calentamiento_peru_files/libs/quarto-html/anchor.min.js"></script>
 <link href="calentamiento_peru_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="calentamiento_peru_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="calentamiento_peru_files/libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="calentamiento_peru_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="calentamiento_peru_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="calentamiento_peru_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="calentamiento_peru_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
 
 
 </head>
@@ -77,12 +77,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <main class="content" id="quarto-document-content">
 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Temperaturas y lluvias</h1>
+</div>
 
 
-<section id="gráficos-de-temperaturas-y-lluvias-en-el-perú" class="level1">
-<h1>Gráficos de temperaturas y lluvias en el Perú</h1>
-<section id="cargar-datos-de-noaa" class="level2">
-<h2 class="anchored" data-anchor-id="cargar-datos-de-noaa">Cargar datos de NOAA</h2>
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="cargar-datos-de-noaa" class="level1">
+<h1>Cargar datos de NOAA</h1>
 <ul>
 <li>Perú: todas las estaciones, desde 1947 en adelante</li>
 </ul>
@@ -101,10 +114,10 @@ $ date    &lt;date&gt; 1963-01-03, 1963-01-05, 1963-01-06, 1963-01-07, 1963-01-0
 </div>
 </div>
 </section>
-<section id="creación-de-datasets" class="level2">
-<h2 class="anchored" data-anchor-id="creación-de-datasets">Creación de datasets</h2>
-<section id="datasets-a-nivel-de-estación" class="level3">
-<h3 class="anchored" data-anchor-id="datasets-a-nivel-de-estación">Datasets a nivel de estación</h3>
+<section id="creación-de-datasets" class="level1">
+<h1>Creación de datasets</h1>
+<section id="datasets-a-nivel-de-estación" class="level2">
+<h2 class="anchored" data-anchor-id="datasets-a-nivel-de-estación">Datasets a nivel de estación</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>daily_data:</code></pre>
@@ -156,8 +169,8 @@ $ name    &lt;chr&gt; "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE", "IQUITOS, PE"
 </div>
 </div>
 </section>
-<section id="datasets-a-nivel-nacional" class="level3">
-<h3 class="anchored" data-anchor-id="datasets-a-nivel-nacional">Datasets a nivel nacional</h3>
+<section id="datasets-a-nivel-nacional" class="level2">
+<h2 class="anchored" data-anchor-id="datasets-a-nivel-nacional">Datasets a nivel nacional</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>daily_data_national:</code></pre>
@@ -200,19 +213,18 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 </div>
 </div>
 </section>
-<section id="temperaturas-promedio" class="level3">
-<h3 class="anchored" data-anchor-id="temperaturas-promedio">Temperaturas promedio</h3>
-<section id="temperatura-promedio-1947-2023---nacional" class="level4">
-<h4 class="anchored" data-anchor-id="temperatura-promedio-1947-2023---nacional">Temperatura promedio 1947-2023 - Nacional</h4>
+<section id="temperaturas-promedio" class="level2">
+<h2 class="anchored" data-anchor-id="temperaturas-promedio">Temperaturas promedio</h2>
+<section id="temperatura-promedio-1947-2023---nacional" class="level3">
+<h3 class="anchored" data-anchor-id="temperatura-promedio-1947-2023---nacional">Temperatura promedio 1947-2023 - Nacional</h3>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 19.51626</code></pre>
 </div>
 </div>
 </section>
-</section>
-<section id="section" class="level3">
-<h3 class="anchored" data-anchor-id="section"></h3>
+<section id="un-poco-de-data-wrangling-quizás-lo-borramos" class="level3">
+<h3 class="anchored" data-anchor-id="un-poco-de-data-wrangling-quizás-lo-borramos">un poco de data wrangling (quizás lo borramos)</h3>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 14,523 × 2
@@ -261,43 +273,88 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 </div>
 </div>
 </section>
-<section id="heatmaps-semanales" class="level1">
-<h1>Heatmaps semanales</h1>
+<section id="heatmaps-lima" class="level1">
+<h1>Heatmaps Lima</h1>
 <section id="plot-base" class="level2">
 <h2 class="anchored" data-anchor-id="plot-base">Plot base</h2>
-<p>Creamos una función para hacer el heatmap base:</p>
+<ul>
+<li>Creamos un theme</li>
+</ul>
+<ul>
+<li>Creamos una función para hacer el heatmap base:</li>
+</ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>make_base_weekly_heatmap():</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>function (weekly_dataset, custom_breaks = waiver(), custom_limits = waiver()) 
+<pre><code>function (weekly_dataset, custom_breaks_years = waiver(), custom_limits = waiver(), 
+    custom_breaks_fill = waiver(), custom_labels_fill = waiver()) 
 NULL</code></pre>
 </div>
 </div>
-<p>Aplicamos la función a Lima - Callao del 82 en adelante:</p>
+<p>Usamos la función para crear heatmap de Lima - Callao del 82 en adelante:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/create_baselpot-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
-<p>Estilizamos:</p>
+<ul>
+<li>Creamos una lista de anotaciones</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>annotations_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicio de año</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">1981</span>, <span class="at">y =</span> <span class="fl">3.5</span>, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Semana 1</span><span class="sc">\n</span><span class="st">de 1982"</span>, </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1981</span>, <span class="at">y =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">1979</span>, <span class="at">yend =</span> <span class="dv">3</span>),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Última semana</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">2023.2</span>, <span class="at">y =</span> <span class="dv">46</span>, <span class="at">xend =</span> <span class="fl">2024.5</span>, <span class="at">yend =</span> <span class="dv">48</span>),</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>               <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2025</span>, <span class="at">y =</span> <span class="dv">47</span>,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Semana 45</span><span class="sc">\n</span><span class="st">de 2023"</span>,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 83</span></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1982.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">82/83"</span>, </span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 98</span></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1997.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">97/98"</span>, </span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 23</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2024.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"¿Niño</span><span class="sc">\n</span><span class="st">23/24?"</span>, </span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>)</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Estilizamos:</li>
+</ul>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/stylize_plot-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 </section>
-<section id="heatmaps-nacionales---escala-fija" class="level2">
-<h2 class="anchored" data-anchor-id="heatmaps-nacionales---escala-fija">Heatmaps nacionales - Escala fija</h2>
+</section>
+<section id="heatmaps-de-ciudades-de-la-costa---escala-fija" class="level1">
+<h1>Heatmaps de ciudades de la costa - Escala fija</h1>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly-1.png" class="img-fluid" width="768"></p>
 </div>
 </div>
-</section>
-<section id="heatmaps-nacionales---escala-libre" class="level2">
-<h2 class="anchored" data-anchor-id="heatmaps-nacionales---escala-libre">Heatmaps nacionales - Escala libre</h2>
+<section id="heatmaps-de-ciudades-de-la-costa---escala-libre" class="level2">
+<h2 class="anchored" data-anchor-id="heatmaps-de-ciudades-de-la-costa---escala-libre">Heatmaps de ciudades de la costa - Escala libre</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly_free-1.png" class="img-fluid" width="768"></p>
@@ -307,25 +364,11 @@ NULL</code></pre>
 </section>
 <section id="lluvias" class="level1">
 <h1>Lluvias</h1>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="calentamiento_peru_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="576"></p>
-</div>
-</div>
 <section id="lluvia-heatmap" class="level2">
 <h2 class="anchored" data-anchor-id="lluvia-heatmap">Lluvia heatmap</h2>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="calentamiento_peru_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="576"></p>
-</div>
-</div>
-<div class="cell">
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-ℹ Please use `linewidth` instead.</code></pre>
-</div>
-<div class="cell-output-display">
-<p><img src="calentamiento_peru_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="576"></p>
+<p><img src="calentamiento_peru_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="576"></p>
 </div>
 </div>
 </section>

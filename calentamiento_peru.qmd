@@ -1,5 +1,11 @@
-# Gráficos de temperaturas y lluvias en el Perú
+---
+title: "Temperaturas y lluvias"
+format:
+  html:
+    theme: darkly
+    highlight-style: monokai
 
+---
 
 ```{r libraries}
 #| include: false
@@ -10,7 +16,7 @@ library(plotly)
 library(patchwork)
 ```
 
-## Cargar datos de NOAA
+# Cargar datos de NOAA
 
  - Perú: todas las estaciones, desde 1947 en adelante
 
@@ -20,9 +26,9 @@ load("data/per_noaa_1947_2023.RData")
 glimpse(per_noaa_1947_2023)
 ```
 
-## Creación de datasets 
+# Creación de datasets 
 
-### Datasets a nivel de estación
+## Datasets a nivel de estación
 ```{r wrangling_databases}
 #| echo: false
 daily_data <- per_noaa_1947_2023 |>
@@ -39,8 +45,8 @@ weekly_averages <- daily_data |>
         tavg = mean(tavg, na.rm = TRUE),
         tmax = mean(tmax, na.rm = TRUE),
         tmin = mean(tmin, na.rm = TRUE),
-        name = first(name)
-        ) |> suppressMessages() |> 
+        name = first(name)) |> 
+    suppressMessages() |> 
     ungroup()
 
 yearly_averages <- daily_data |> 
@@ -52,8 +58,8 @@ yearly_averages <- daily_data |>
         tavg = mean(tavg, na.rm = TRUE),
         tmax = mean(tmax, na.rm = TRUE),
         tmin = mean(tmin, na.rm = TRUE),
-        name = first(name)
-        ) |> suppressMessages() |> 
+        name = first(name)) |> 
+    suppressMessages() |> 
     ungroup()
 
 cat("daily_data:\n")
@@ -69,7 +75,7 @@ glimpse(yearly_averages)
 cat("\n")
 ```
 
-### Datasets a nivel nacional
+## Datasets a nivel nacional
 ```{r wrangling_national}
 #| echo: false
 daily_data_national <- daily_data |> 
@@ -120,9 +126,9 @@ glimpse(yearly_averages_national)
 cat("\n")
 ```
 
-### Temperaturas promedio
+## Temperaturas promedio
 
-#### Temperatura promedio 1947-2023 - Nacional
+### Temperatura promedio 1947-2023 - Nacional
 ```{r temp_promedio}
 #| echo: false
 # Hallar temperatura promedio 1947-2023
@@ -137,7 +143,7 @@ temp_avg_63_23 <-  per_noaa_1947_2023 |>
 temp_avg_63_23
 ```
 
-### 
+### un poco de data wrangling (quizás lo borramos)
 ```{r wrangling}
 #| echo: false
 
@@ -193,10 +199,11 @@ rain_week <- rain %>%
 df_week
 ```
 
-# Heatmaps semanales
+# Heatmaps Lima
 
 ## Plot base
 
+ - Creamos un theme
 ```{r theme_heatmap}
 #| echo: false
 
@@ -231,19 +238,22 @@ theme_heatmap <- function() {
         legend.title = element_text(size = 6),
         legend.text = element_text(size = 6),
         legend.position = c(0.87, -0.1),
-        legend.direction = "horizontal"#,
+        legend.direction = "horizontal",
+        panel.spacing.y = unit(2, "lines")
         # legend.spacing.y = unit(15, "pt"),
         )
 }
 ```
 
-Creamos una función para hacer el heatmap base:
+ - Creamos una función para hacer el heatmap base:
 ```{r fun_weekly_heatmap, fig.width=6, fig.height=6}
 #| echo: false
 
 make_base_weekly_heatmap <- function(weekly_dataset,
-                                     custom_breaks = waiver(),
-                                     custom_limits = waiver()
+                                     custom_breaks_years = waiver(),
+                                     custom_limits = waiver(),
+                                     custom_breaks_fill = waiver(),
+                                     custom_labels_fill = waiver()
                                      ) {
     ggplot(
         weekly_dataset,
@@ -252,7 +262,7 @@ make_base_weekly_heatmap <- function(weekly_dataset,
         geom_tile(colour = "#2D2D2D") +  # Use geom_tile() instead of geom_raster() for better control
         scale_x_continuous(
             expand = c(0, 0),
-            breaks = custom_breaks,
+            breaks = custom_breaks_years,
             limits = custom_limits,
             position = "bottom"
         ) + 
@@ -265,8 +275,8 @@ make_base_weekly_heatmap <- function(weekly_dataset,
     scale_fill_distiller(
         palette = "RdBu", 
         direction = -1,
-        breaks = c(15, 20, 25),
-        labels = c("15 °C", "20 °C ", "25 °C")
+        breaks = custom_breaks_fill,
+        labels = custom_labels_fill
     ) + 
     labs(
         x = "Año",
@@ -283,203 +293,136 @@ cat("make_base_weekly_heatmap():\n")
 args(make_base_weekly_heatmap)
 ```
 
-Aplicamos la función a Lima - Callao del 82 en adelante:
+Usamos la función para crear heatmap de Lima - Callao del 82 en adelante:
 ```{r create_baselpot, fig.width=6, fig.height=6}
 #| echo: false
 
-p <- make_base_weekly_heatmap(
+p_base <- make_base_weekly_heatmap(
     weekly_dataset = 
         filter(weekly_averages,
                year > 1981,
                city == "Lima - Callao"),
-    custom_breaks = c(1990, 2000, 2010, 2020),
-    custom_limits = c(1974, 2035))
+    custom_breaks_years = c(1990, 2000, 2010, 2020),
+    custom_limits = c(1974, 2035),
+    custom_breaks_fill = c(15, 20, 25),
+    custom_labels_fill = c("15 °C", "20 °C ", "25 °C")
+    )
 
 
 # Print the plot
-print(p)
+print(p_base)
 ```
 
-Estilizamos:
+- Creamos una lista de anotaciones
+
+```{r annotation_list}
+annotations_list <- list(
+    # Inicio de año
+    annotate("text", x = 1981, y = 3.5, 
+             label = "Semana 1\nde 1982", 
+             size = 3.5, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1),
+    geom_curve(aes(x = 1981, y = 1, xend = 1979, yend = 3),
+               curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
+               arrow = arrow(type = "closed", length = unit(0.05, "inches"))),
+    # Última semana
+    geom_curve(aes(x = 2023.2, y = 46, xend = 2024.5, yend = 48),
+               curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
+               arrow = arrow(type = "closed", length = unit(0.05, "inches"))),
+    annotate("text", x = 2025, y = 47,
+             label = "Semana 45\nde 2023",
+             angle = 0, hjust = 0,
+             color = "#F9F7F3", size = 3.5, family = "Sanchez"),
+    # FEN 83
+    annotate("text", x = 1982.5, y = -0.5, 
+             label = "Niño\n82/83", 
+             angle = 0, vjust = 0, 
+             color = "#F9F7F3", size = 2.6, family = "Sanchez"),
+    # FEN 98
+    annotate("text", x = 1997.5, y = -0.5, 
+             label = "Niño\n97/98", 
+             angle = 0, vjust = 0, 
+             color = "#F9F7F3", size = 2.6, family = "Sanchez"),
+    # FEN 23
+    annotate("text", x = 2024.5, y = -0.5, 
+             label = "¿Niño\n23/24?", 
+             angle = 0, vjust = 0, 
+             color = "#F9F7F3", size = 2.6, family = "Sanchez")
+)
+```
+
+
+ - Estilizamos:
 ```{r stylize_plot, fig.width=6, fig.height=6}
 #| echo: false
-heatmap <- p +
-# Missing data
-    annotate(
-        "text", x = 2013.5, y = mean(range(df_week$week)), 
-        label = "2013 y 2014 sin datos disponibles", 
-        size = 3, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5
-        ) +
-# Inicio de año
-    annotate(
-        "text", x = 1981, y = 3.5, 
-        label = "Semana 1\nde 1982", 
-        size = 3.5, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1,
-        ) +
-    geom_curve(
-        aes(x    = 1981,    y = 1, 
-            xend = 1979, yend = 3),
-        curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
-        arrow = arrow(
-            type = "closed", length = unit(0.05, "inches"))
-        ) + 
-# Última semana
-    geom_curve(
-        aes(x    = 2023.2,    y = 46,
-            xend = 2024.5, yend = 48),
-        curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
-        arrow = arrow(
-            type = "closed", length = unit(0.05, "inches"))
-        ) +
-    annotate(
-        "text",
-        x = 2025, y = 47,
-        label = "Semana 45\nde 2023",
-        angle = 0, hjust = 0,
-        color = "#F9F7F3", size = 3.5, family = "Sanchez"
-        ) +
-# FEN 83
-    annotate(
-        "text", 
-        x = 1982.5, y = -0.5, 
-        label = "Niño\n82/83", 
-        angle = 0, vjust = 0, 
-        color = "#F9F7F3", size = 2.6, family = "Sanchez"
-        ) +
-# FEN 98
-    annotate(
-        "text", 
-        x = 1997.5, y = -0.5, 
-        label = "Niño\n97/98", 
-        angle = 0, vjust = 0, 
-        color = "#F9F7F3", size = 2.6, family = "Sanchez"
-        ) +
-# FEN 23
-    annotate(
-        "text", 
-        x = 2024.5, y = -0.5, 
-        label = "¿Niño\n23/24?", 
-        angle = 0, vjust = 0, 
-        color = "#F9F7F3", size = 2.6, family = "Sanchez"
-        ) 
+p_base + annotations_list +     # Missing data
+    annotate("text", x = 2013.5, y = mean(range(df_week$week)), 
+             label = "2013 y 2014 sin datos disponibles", 
+             size = 3, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5)
 
 ggsave("outputs/heatmap.png") |> suppressMessages()
 ggsave("outputs/heatmap.svg") |> suppressMessages()
 
-print(heatmap)
 ```
 
 
-## Heatmaps nacionales - Escala fija
+# Heatmaps de ciudades de la costa - Escala fija
 
-```{r national_heatmap_weekly, fig.width=8, fig.height=20}
+```{r national_heatmap_weekly, fig.width=8, fig.height=40}
 #| echo: false
 
-p <- make_base_weekly_heatmap(
+p_heatmaps_costa_fija <- make_base_weekly_heatmap(
     weekly_dataset = 
-        filter(weekly_averages,
-               year > 1981,
-               city %in% c("Arequipa", "Chiclayo",      "Cusco",    "Iquitos", 
-                           "Juliaca",  "Lima - Callao", "Pisco",    "Piura", 
-                           "Pucallpa", "Tacna",         "Trujillo", "Tumbes"
-                           )),
-    custom_breaks = c(1990, 2000, 2010, 2020),
+        filter(
+            weekly_averages,
+            year > 1981,
+            city %in% c("Pisco",    "Tumbes",        "Piura",    "Chiclayo",
+                        "Trujillo", "Lima - Callao", "Tacna")),
+    custom_breaks_years = c(1990, 2000, 2010, 2020),
     custom_limits = c(1974, 2035)) + 
-    facet_wrap(~ city, ncol = 2, scales = "free") +
+    facet_wrap(~ city, 
+               ncol = 1#, scales = "free"
+               ) +
     theme(
         plot.title = element_blank(),
         plot.subtitle = element_blank()
-    )
+    ) + 
+    annotations_list
 
-
-p
+p_heatmaps_costa_fija
 ```
-## Heatmaps nacionales - Escala libre
+## Heatmaps de ciudades de la costa - Escala libre
 
-```{r national_heatmap_weekly_free, fig.width=8, fig.height=20}
+```{r national_heatmap_weekly_free, fig.width=8, fig.height=40}
 #| echo: false
-selected_stations <- filter(weekly_averages,
-               year > 1981,
-               city %in% c("Arequipa", "Chiclayo",      "Cusco",    "Iquitos", 
-                           "Juliaca",  "Lima - Callao", "Pisco",    "Piura", 
-                           "Pucallpa", "Tacna",         "Trujillo", "Tumbes"
-                           ))
-    
-    
+selected_stations <- filter(
+    weekly_averages,
+    year > 1981,
+    city %in% c("Pisco",    "Tumbes",        "Piura",    "Chiclayo",
+                "Trujillo", "Lima - Callao", "Tacna"))
+
 unique_cities <- unique(selected_stations$city)
+
 plots <- lapply(unique_cities, function(ciudad) {
-    df_subset <- filter(selected_stations,
-                        city == ciudad)
+    df_subset <- filter(selected_stations, city == ciudad)
     make_base_weekly_heatmap(df_subset, 
-                             custom_breaks = c(1990, 2000, 2010, 2020), 
+                             custom_breaks_years = c(1990, 2000, 2010, 2020), 
                              custom_limits = c(1974, 2035)) +
+        labs(title = ciudad) +  # Set the title to the current city
     theme(
-        plot.title = element_blank(),
         plot.subtitle = element_blank(),
-        plot.caption = element_blank()
-    )
+        plot.caption = element_blank(),
+        legend.text = element_text(size = 10)
+    ) + 
+        annotations_list
+    
 })
 
-
-plot_combined <- wrap_plots(plots, ncol = 2)  # Adjust ncol as needed
+plot_combined <- wrap_plots(plots, ncol = 1)  # Adjust ncol as needed
 
 plot_combined
 ```
 
 # Lluvias
-
-```{r fig.width=6, fig.height=1}
-#| echo: false
-rain_year <- rain %>%
-  mutate(week = week(date), year = year(date)) %>%
-  group_by(year) %>%
-  summarize(rain_avg_year = mean(prcp, na.rm = TRUE),
-            rain_sum_year = sum(prcp, na.rm = TRUE)) |> 
-  ungroup() 
-
-ggplot(rain_year,
-       aes(x = year, y = rain_sum_year, fill = "red")) + 
-    geom_col() +
-    scale_x_continuous(
-        expand = c(0, 0),
-        breaks = c(1982, 1995, 2001, 1986, 2018),
-        limits = c(1974, 2035),
-        position = "bottom"
-    ) +
-    theme_void() +  # Use theme_void() as the base theme
-    theme(
-        text = element_text(
-            colour = "#F9F7F3",
-            family = "Sanchez"),
-        plot.background = element_rect(
-            fill = "#2D2D2D", color = NA),  # #2D2D2D plot background
-        panel.background = element_rect(
-            fill = "#2D2D2D", color = NA),  # #2D2D2D panel background
-        axis.line = element_blank(),
-        axis.text = element_text(size = 6), # Remove axis lines
-        plot.caption = element_text(
-            margin = margin(t = 20, unit = "pt"),
-            hjust = 0, vjust = 1, size = 5, 
-            color = "#F9F7F3", family = "Sanchez"),
-        plot.title = element_text(
-            margin = margin(b = 3, unit = "pt")),
-        plot.title.position = "plot", 
-        plot.subtitle = element_text(
-            margin = margin(b = 10, unit = "pt"),
-            size = 10),
-        # axis.text.y = element_blank(),
-        axis.text.x = element_text(
-            size = 7
-        ),
-        plot.margin = margin(
-            t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
-        legend.title = element_text(size = 6),
-        legend.text = element_text(size = 6),
-        legend.position = "none",
-        legend.direction = "horizontal"#,
-        # legend.spacing.y = unit(15, "pt"),
-        )
-```
 
 ## Lluvia heatmap
 ```{r fig.width=6, fig.height=6}
@@ -553,77 +496,11 @@ p_rain <- ggplot(rain_week, aes(x = year, y = week, fill = rain_week)) +
 
 
 # Print the plot
-print(p)
+print(p_rain)
 
 ```
 
-```{r fig.width=6, fig.height=6}
-#| echo: false
-heatmap <- p_rain +
-# Missing data
-    annotate(
-        "text", x = 2013.5, y = mean(range(df_week$week)), 
-        label = "2013 y 2014 sin datos disponibles", 
-        size = 3, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5
-        ) +
-# Inicio de año
-    annotate(
-        "text", x = 1981, y = 3.5, 
-        label = "Semana 1\nde 1982", 
-        size = 3.5, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1,
-        ) +
-    geom_curve(
-        aes(x    = 1981,    y = 1, 
-            xend = 1979, yend = 3),
-        curvature = 0.3, color = "#F9F7F3", size = 0.2,
-        arrow = arrow(
-            type = "closed", length = unit(0.05, "inches"))
-        ) + 
-# Última semana
-    geom_curve(
-        aes(x    = 2023.2,    y = 46,
-            xend = 2024.5, yend = 48),
-        curvature = 0.3, color = "#F9F7F3", size = 0.2,
-        arrow = arrow(
-            type = "closed", length = unit(0.05, "inches"))
-        ) +
-    annotate(
-        "text",
-        x = 2025, y = 47,
-        label = "Semana 45\nde 2023",
-        angle = 0, hjust = 0,
-        color = "#F9F7F3", size = 3.5, family = "Sanchez"
-        ) +
-# FEN 83
-    annotate(
-        "text", 
-        x = 1982.5, y = -0.5, 
-        label = "Niño\n82/83", 
-        angle = 0, vjust = 0, 
-        color = "#F9F7F3", size = 2.6, family = "Sanchez"
-        ) +
-# FEN 98
-    annotate(
-        "text", 
-        x = 1997.5, y = -0.5, 
-        label = "Niño\n97/98", 
-        angle = 0, vjust = 0, 
-        color = "#F9F7F3", size = 2.6, family = "Sanchez"
-        ) +
-# FEN 23
-    annotate(
-        "text", 
-        x = 2024.5, y = -0.5, 
-        label = "¿Niño\n23/24?", 
-        angle = 0, vjust = 0, 
-        color = "#F9F7F3", size = 2.6, family = "Sanchez"
-        ) 
 
-ggsave("outputs/heatmap.png") |> suppressMessages()
-ggsave("outputs/heatmap.svg") |> suppressMessages()
-
-print(heatmap)
-```
 
 
 ```{r fig.width=6, fig.height=2}
