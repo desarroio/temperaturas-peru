@@ -18,3 +18,4 @@ Estos tres archivos se fusionan en uno solo con las siguientes características:
  Notas:
  - NOAA_PER_1940_1979_18_STATIONS.csv no tiene datos de snow depth (SNWD)
  - Hay demasiados missings recientes para usar los datos de precipitaciones
+ - Los heat stripes en ciudades de la costa no sirven porque hay muchos missings, y el FEN introduce distrosiones
