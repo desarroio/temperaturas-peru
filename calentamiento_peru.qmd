@@ -433,36 +433,7 @@ plot_combined <- wrap_plots(plots, ncol = 1)  # Adjust ncol as needed
 plot_combined
 ```
 
-# Lluvias
 
-## Lluvia heatmap
-```{r national_rainmap_weekly, fig.width=8, fig.height=40}
-#| echo: false
-
-p_rainmaps_costa_fija <- make_base_weekly_heatmap(
-    weekly_dataset = 
-        filter(
-            weekly_averages,
-            year > 1981,
-            city %in% c("Pisco",    "Tumbes",        "Piura",    "Chiclayo",
-                        "Trujillo", "Lima - Callao", "Tacna")),
-    prcp,
-    custom_breaks_years = c(1990, 2000, 2010, 2020),
-    custom_limits = c(1974, 2035),
-    color_palette = "Blues",
-    fill_direction = 1
-    ) + 
-    facet_wrap(~ city, 
-               ncol = 1#, scales = "free"
-               ) +
-    theme(
-        plot.title = element_blank(),
-        plot.subtitle = element_blank()
-    ) + 
-    annotations_list
-
-p_rainmaps_costa_fija
-```
 
 
 
