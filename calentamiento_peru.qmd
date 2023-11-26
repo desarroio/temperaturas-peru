@@ -63,7 +63,7 @@ yearly_averages <- daily_data |>
     ungroup()
 
 
-# Filter missing weeks
+# Filter missing weeks on yearly averages:
 
 # Create a mapping of stations to cities
 station_city_mapping <- daily_data |>
@@ -81,7 +81,6 @@ complete_weeks <- expand.grid(
 daily_data_complete <- complete_weeks  |> 
     left_join(station_city_mapping, by = "station")  |> 
     left_join(daily_data |> select(-city, -name), by = c("station", "year", "week"))
-
 
 # Proceed with the pipeline
 
@@ -424,7 +423,7 @@ p_heatmaps_costa_fija <- make_base_weekly_heatmap(
 
 p_heatmaps_costa_fija
 ```
-## Heatmaps de ciudades de la costa - Escala libre
+# Heatmaps de ciudades de la costa - Escala libre
 
 ```{r national_heatmap_weekly_free, fig.width=8, fig.height=40}
 #| echo: false
@@ -440,6 +439,7 @@ plots <- lapply(unique_cities, function(ciudad) {
     df_subset <- filter(selected_stations, city == ciudad)
     make_base_weekly_heatmap(df_subset, 
                              tavg,
+                             fill_direction = -1,
                              custom_breaks_years = c(1990, 2000, 2010, 2020),
                              custom_limits = c(1974, 2035)) +
         labs(title = ciudad) +  # Set the title to the current city
@@ -458,8 +458,40 @@ plot_combined
 ```
 
 
-Heat stripes
-```{r}
+# Heat stripes
+```{r heat_stripes}
+make_heat_stripes <- function(yearly_dataset,
+                              medicion,
+                              color_palette = "RdBu") {
+    ggplot(
+        data = yearly_dataset,
+        aes(
+            x = factor(year),
+            y = 1,
+            fill = {{ medicion }})
+        ) + 
+    labs(title = first(yearly_dataset$city)) +
+    geom_col() +
+    scale_fill_distiller(
+        palette = color_palette
+    ) + 
+    theme_void() +
+        theme(
+            plot.title = element_text()
+        )
+    }
+
+
+relevant_data <- yearly_averages_corrected |> filter(
+    year > 1981,
+    city %in% c("Pisco",    "Tumbes",        "Piura",    "Chiclayo",
+                "Trujillo", "Lima - Callao", "Tacna")
+    )
+list_of_city_dfs <- split(
+    relevant_data,
+    relevant_data$city)
+
+lapply(list_of_city_dfs, make_heat_stripes, tavg)
 
 ```
 
