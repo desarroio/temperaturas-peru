@@ -246,11 +246,10 @@ theme_heatmap <- function() {
             hjust = 0, vjust = 1, size = 2.75, 
             color = "#F9F7F3", family = "Sanchez"),
         plot.title = element_text(
-            size = 13, hjust = 0.5,
-            margin = margin(b = 3, unit = "pt")),
+            size = 11, hjust = 0.5),
         plot.title.position = "plot", 
         plot.subtitle = element_text(
-            margin = margin(t = 3, b = 10, unit = "pt"),
+            margin = margin(t = 2.5, b = 7.5, unit = "pt"),
             size = 7, hjust = 0.5),
         axis.text.y = element_blank(),
         axis.text.x = element_text(
@@ -411,7 +410,9 @@ p_base + annotations_list +     # Missing data
              label = "2013 y 2014 sin datos disponibles", 
              size = 2, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5)
 
-ggsave("outputs/heatmap.png", width = 1200, height = 1200, units = "px") |> suppressMessages()
+ggsave("outputs/heatmap_tw.png", width = 1200, height = 1200, units = "px") |> suppressMessages()
+ggsave("outputs/heatmap_ig.png", width = 1080, height = 1080, units = "px") |> suppressMessages()
+# ggsave("outputs/heatmap_in.png", width = 1080, height = 1080, units = "px") |> suppressMessages()
 # ggsave("outputs/heatmap.svg", width = 1200, height = 1200, units = "px") |> suppressMessages()
 
 ```
