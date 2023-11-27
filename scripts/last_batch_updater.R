@@ -1,29 +1,14 @@
-# Desde 1947 hasta oct 23
+# Make sure to replace the last_batch.csv file with the one having data from 2023-11-01 on
+# Run this script
 
-per_noaa_1 <- read_csv(
-    "data/raw/NOAA_PER_1940_1979_18_STATIONS.csv",
+last_batch <- read_csv(
+    "data/raw/last_batch.csv",
     col_types = cols(
-        DATE = col_date(format = "%Y-%m-%d"))
-    ) |>
+        DATE = col_date(format = "%Y-%m-%d"))) |>
     filter(
-        STATION != "BR000469001")
-
-per_noaa_2 <- read_csv(
-    "data/raw/NOAA_PER_1980_2023_18_STATIONS.csv",
-    col_types = cols(
-        DATE = col_date(format = "%Y-%m-%d"),
-        SNWD = col_skip())
-    )|>
+        STATION != "BR000469001") |>
     filter(
-        STATION != "BR000469001")
-
-per_noaa_3 <- read_csv(
-    "data/raw/NOAA_PER_1940_2023_8_STATIONS.csv",
-    col_types = cols(
-        DATE = col_date(format = "%Y-%m-%d"),
-        SNWD = col_skip())) |>
-    filter(
-            STATION != "BL000085230")
+        STATION != "BL000085230")
 
 city_recoder <- setNames(
     c("Iquitos",     "Tarapoto",     "Arequipa",       "Tumbes",
@@ -39,13 +24,13 @@ city_recoder <- setNames(
       "PEM00084782", "PE000084444",  "PEM00084390",    "PEM00084425", 
       "PEM00084474", "PEM00084531",  "PEM00084542",    "PEM00084564"))
 
-per_noaa_1947_2023_oct <- rbind(per_noaa_1, per_noaa_2, per_noaa_3) |> 
-    filter(DATE < "2023-11-01") |> 
-    filter(DATE > "1946-12-21") |> 
+last_batch_noaa <- last_batch |> 
     rename_with(tolower) |> 
     mutate(city = recode(station, !!!city_recoder)) |> 
     relocate(city, prcp:tmin, station, name)
 
-save(per_noaa_1947_2023_oct, file = "data/per_noaa_1947_2023_oct.RData")
+per_noaa_1947_2023 <- per_noaa_1947_2023_oct |> bind_rows(last_batch_noaa)
 
-rm(per_noaa_1, per_noaa_2, per_noaa_3, city_recoder)
+save(per_noaa_1947_2023, file = "data/per_noaa_1947_2023.RData")
+
+    

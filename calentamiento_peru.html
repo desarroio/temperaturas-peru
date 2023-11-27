@@ -101,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 384,667
+<pre><code>Rows: 385,094
 Columns: 8
 $ city    &lt;chr&gt; "Pucallpa", "Pucallpa", "Pucallpa", "Pucallpa", "Pucallpa", "P…
 $ prcp    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
@@ -123,7 +123,7 @@ $ date    &lt;date&gt; 1963-01-03, 1963-01-05, 1963-01-06, 1963-01-07, 1963-01-0
 <pre><code>daily_data:</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 384,667
+<pre><code>Rows: 385,094
 Columns: 10
 $ city    &lt;chr&gt; "Pucallpa", "Pucallpa", "Pucallpa", "Pucallpa", "Pucallpa", "P…
 $ prcp    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
@@ -140,7 +140,7 @@ $ year    &lt;dbl&gt; 1963, 1963, 1963, 1963, 1963, 1963, 1963, 1963, 1963, 1963
 <pre><code>weekly_averages:</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 63,088
+<pre><code>Rows: 63,154
 Columns: 9
 $ station &lt;chr&gt; "PE000084377", "PE000084377", "PE000084377", "PE000084377", "P…
 $ year    &lt;dbl&gt; 1973, 1973, 1973, 1973, 1973, 1973, 1973, 1973, 1973, 1973, 19…
@@ -189,7 +189,7 @@ $ tavg          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 26.38394, 26
 <pre><code>daily_data_national:</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 21,198
+<pre><code>Rows: 21,217
 Columns: 7
 $ date &lt;date&gt; 1946-12-22, 1946-12-23, 1946-12-24, 1946-12-25, 1946-12-26, 1946…
 $ prcp &lt;dbl&gt; NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, …
@@ -203,7 +203,7 @@ $ year &lt;dbl&gt; 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1946, 1
 <pre><code>weekly_averages_national:</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 3,123
+<pre><code>Rows: 3,126
 Columns: 6
 $ year &lt;dbl&gt; 1946, 1946, 1946, 1947, 1947, 1947, 1947, 1947, 1947, 1947, 1947,…
 $ week &lt;dbl&gt; 51, 52, 53, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…
@@ -232,7 +232,7 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 <h3 class="anchored" data-anchor-id="temperatura-promedio-1947-2023---nacional">Temperatura promedio 1947-2023 - Nacional</h3>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 19.51626</code></pre>
+<pre><code>[1] 19.51375</code></pre>
 </div>
 </div>
 </section>
@@ -240,7 +240,7 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 <h3 class="anchored" data-anchor-id="un-poco-de-data-wrangling-quizás-lo-borramos">un poco de data wrangling (quizás lo borramos)</h3>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 14,523 × 2
+<pre><code># A tibble: 14,542 × 2
    date        tavg
    &lt;date&gt;     &lt;dbl&gt;
  1 1982-01-01  21.6
@@ -253,7 +253,7 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
  8 1982-01-08  22.1
  9 1982-01-09  20.5
 10 1982-01-10  21  
-# … with 14,513 more rows</code></pre>
+# … with 14,532 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -267,7 +267,7 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
 `.groups` argument.</code></pre>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2,111 × 4
+<pre><code># A tibble: 2,114 × 4
     year  week tavg_week tyear
    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
  1  1982     1      21.6  20.1
@@ -280,7 +280,7 @@ $ tmin &lt;dbl&gt; NaN, NaN, 8.30000, 14.19539, 13.93560, 14.80445, 14.18182, 13
  8  1982     8      21.8  20.1
  9  1982     9      21.0  20.1
 10  1982    10      21.0  20.1
-# … with 2,101 more rows</code></pre>
+# … with 2,104 more rows</code></pre>
 </div>
 </div>
 </section>
@@ -317,18 +317,18 @@ NULL</code></pre>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>annotations_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Inicio de año</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>, <span class="at">x =</span> min_year<span class="dv">-1</span>, <span class="at">y =</span> <span class="fl">3.5</span>, </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"Semana 1</span><span class="sc">\n</span><span class="st">de"</span>, min_year), </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> min_year<span class="dv">-1</span>, <span class="at">y =</span> <span class="dv">1</span>,</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">xend =</span> min_year<span class="dv">-3</span>, <span class="at">yend =</span> <span class="dv">3</span>),</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Última semana</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>, </span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> max_year <span class="sc">+</span> <span class="dv">2</span>, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>, <span class="at">x =</span> min_year<span class="dv">-1</span>, </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="fl">3.5</span>, </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"Semana 1</span><span class="sc">\n</span><span class="st">de"</span>, min_year), </span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust =</span> <span class="dv">1</span>),</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> min_year<span class="dv">-1</span>, <span class="at">y =</span> <span class="dv">1</span>,</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">xend =</span> min_year<span class="dv">-3</span>, <span class="at">yend =</span> <span class="dv">3</span>),</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.1</span>,</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"inches"</span>))),</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Última semana</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"text"</span>, <span class="at">x =</span> max_year <span class="sc">+</span> <span class="dv">2</span>, </span>
 <span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="fu">max</span>(</span>
 <span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>            df_week_heat[df_week_heat<span class="sc">$</span>year <span class="sc">==</span> max_year,]<span class="sc">$</span>week) <span class="sc">+</span> <span class="dv">3</span>,</span>
 <span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> <span class="fu">paste</span>(</span>
@@ -337,37 +337,36 @@ NULL</code></pre>
 <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>                df_week_heat[df_week_heat<span class="sc">$</span>year <span class="sc">==</span> max_year,]<span class="sc">$</span>week), </span>
 <span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>            <span class="st">"</span><span class="sc">\n</span><span class="st">de"</span>, </span>
 <span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>            max_year),</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">3.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> max_year <span class="sc">+</span> <span class="fl">0.2</span>, </span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">max</span>(</span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>                df_week_heat[df_week_heat<span class="sc">$</span>year <span class="sc">==</span> max_year,]<span class="sc">$</span>week) <span class="sc">+</span> <span class="dv">1</span>,</span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">xend =</span> max_year <span class="sc">+</span> <span class="fl">1.5</span>, </span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>            <span class="at">yend =</span> <span class="fu">max</span>(</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>                df_week_heat[df_week_heat<span class="sc">$</span>year <span class="sc">==</span> max_year,]<span class="sc">$</span>week) <span class="sc">+</span> <span class="dv">3</span>),</span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>,</span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>))),</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 83</span></span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1982.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">82/83"</span>, </span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 98</span></span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1997.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">97/98"</span>, </span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 23</span></span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2024.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"¿Niño</span><span class="sc">\n</span><span class="st">23/24?"</span>, </span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">2.6</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>)</span>
-<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>, <span class="at">hjust =</span> <span class="dv">0</span>),</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_curve</span>(</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> max_year <span class="sc">+</span> <span class="fl">0.2</span>, </span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">y =</span> <span class="fu">max</span>(</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>                df_week_heat[df_week_heat<span class="sc">$</span>year <span class="sc">==</span> max_year,]<span class="sc">$</span>week) <span class="sc">+</span> <span class="dv">1</span>,</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>            <span class="at">xend =</span> max_year <span class="sc">+</span> <span class="fl">1.5</span>, </span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">yend =</span> <span class="fu">max</span>(</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>                df_week_heat[df_week_heat<span class="sc">$</span>year <span class="sc">==</span> max_year,]<span class="sc">$</span>week) <span class="sc">+</span> <span class="dv">3</span>),</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">curvature =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">linewidth =</span> <span class="fl">0.1</span>,</span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">type =</span> <span class="st">"closed"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.03</span>, <span class="st">"inches"</span>))),</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 83</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1982.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">82/83"</span>, </span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 98</span></span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1997.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"Niño</span><span class="sc">\n</span><span class="st">97/98"</span>, </span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>),</span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># FEN 23</span></span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2024.5</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>, </span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>             <span class="at">label =</span> <span class="st">"¿Niño</span><span class="sc">\n</span><span class="st">23/24?"</span>, </span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>             <span class="at">angle =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#F9F7F3"</span>, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">family =</span> <span class="st">"Sanchez"</span>)</span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<ul>
-<li>Estilizamos:</li>
-</ul>
+</section>
+<section id="estilizamos" class="level2">
+<h2 class="anchored" data-anchor-id="estilizamos">5. Estilizamos:</h2>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/stylize_plot-1.png" class="img-fluid" width="576"></p>
@@ -382,7 +381,7 @@ NULL</code></pre>
 <pre><code>Warning: Removed 7 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 15148 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 15169 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly-1.png" class="img-fluid" width="768"></p>
@@ -396,43 +395,43 @@ NULL</code></pre>
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2171 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2174 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2167 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2170 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2187 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2190 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2161 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2164 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2111 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2114 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2216 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2219 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 1 rows containing missing values (`geom_text()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 2135 rows containing missing values (`geom_curve()`).</code></pre>
+<pre><code>Warning: Removed 2138 rows containing missing values (`geom_curve()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <p><img src="calentamiento_peru_files/figure-html/national_heatmap_weekly_free-1.png" class="img-fluid" width="768"></p>

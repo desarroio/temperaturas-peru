@@ -242,24 +242,25 @@ theme_heatmap <- function() {
         axis.line = element_blank(),
         axis.text = element_text(size = 6), # Remove axis lines
         plot.caption = element_text(
-            margin = margin(t = 20, unit = "pt"),
-            hjust = 0, vjust = 1, size = 5, 
+            margin = margin(t = 10, unit = "pt"),
+            hjust = 0, vjust = 1, size = 2.75, 
             color = "#F9F7F3", family = "Sanchez"),
         plot.title = element_text(
+            size = 13, hjust = 0.5,
             margin = margin(b = 3, unit = "pt")),
         plot.title.position = "plot", 
         plot.subtitle = element_text(
-            margin = margin(b = 10, unit = "pt"),
-            size = 10),
+            margin = margin(t = 3, b = 10, unit = "pt"),
+            size = 7, hjust = 0.5),
         axis.text.y = element_blank(),
         axis.text.x = element_text(
-            size = 7
+            size = 4
         ),
         plot.margin = margin(
             t = 10, r = 10, b = 10, l = 10, unit = "pt"), 
         legend.title = element_text(size = 6),
-        legend.text = element_text(size = 6),
-        legend.position = c(0.87, -0.1),
+        legend.text = element_text(size = 4),
+        legend.position = c(0.8, -0.1),
         legend.direction = "horizontal",
         panel.spacing.y = unit(2, "lines")
         # legend.spacing.y = unit(15, "pt"),
@@ -307,11 +308,11 @@ make_base_weekly_heatmap <- function(weekly_dataset,
         labs(
             x = "Año",
             y = "Semana",
-            title = "El invierno de Lima 2023 fue de los más\ncálidos desde el Fenómeno El Niño 1997/98",
-            subtitle = "Temperaturas semanales promedio y «niños» de intensidad fuerte",
-            caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Temperaturas diarias promedio en la estación del Aeropuerto Internacional Jorge Chávez.\nPromedios semanales calculados a partir de las temperaturas\ndiarias promedio",
+            title = "El invierno de Lima 2023 fue el más cálido\ndesde el Fenómeno El Niño 1997/98",
+            subtitle = "Temperaturas semanales y «niños» de magnitud fuerte 1973-2023",
+            caption = "Elaboración: Gonzalo Talavera Forlin - desarro.io\nFuente: ncei.noaa.gov - Estación del Aeropuerto Internacional Jorge Chávez.\nPromedios semanales calculados a partir de las temperaturas medias diarias",
             fill = "") + 
-        guides(fill = guide_colourbar(barheight = unit(0.075, "inches"))) +
+        guides(fill = guide_colourbar(barheight = unit(0.03, "inches"))) +
         theme_heatmap()
 }
 
@@ -353,18 +354,18 @@ print(p_base)
 annotations_list <- list(
     # Inicio de año
     annotate(
-        "text", x = min_year-1, y = 3.5, 
+        "text", x = min_year-1, 
+        y = 3.5, 
         label = paste("Semana 1\nde", min_year), 
-        size = 3.5, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1),
+        size = 2, color = "#F9F7F3", family = "Sanchez", vjust = 1, hjust = 1),
     geom_curve(
         aes(x = min_year-1, y = 1,
             xend = min_year-3, yend = 3),
-        curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
-        arrow = arrow(type = "closed", length = unit(0.05, "inches"))),
+        curvature = 0.3, color = "#F9F7F3", linewidth = 0.1,
+        arrow = arrow(type = "closed", length = unit(0.03, "inches"))),
     # Última semana
     annotate(
-        "text", 
-        x = max_year + 2, 
+        "text", x = max_year + 2, 
         y = max(
             df_week_heat[df_week_heat$year == max_year,]$week) + 3,
         label = paste(
@@ -373,8 +374,7 @@ annotations_list <- list(
                 df_week_heat[df_week_heat$year == max_year,]$week), 
             "\nde", 
             max_year),
-        angle = 0, hjust = 0,
-        color = "#F9F7F3", size = 3.5, family = "Sanchez"),
+        size = 2, color = "#F9F7F3", family = "Sanchez", hjust = 0),
     geom_curve(
         aes(x = max_year + 0.2, 
             y = max(
@@ -382,37 +382,37 @@ annotations_list <- list(
             xend = max_year + 1.5, 
             yend = max(
                 df_week_heat[df_week_heat$year == max_year,]$week) + 3),
-        curvature = 0.3, color = "#F9F7F3", linewidth = 0.2,
-        arrow = arrow(type = "closed", length = unit(0.05, "inches"))),
+        curvature = 0.3, color = "#F9F7F3", linewidth = 0.1,
+        arrow = arrow(type = "closed", length = unit(0.03, "inches"))),
     # FEN 83
     annotate("text", x = 1982.5, y = -0.5, 
              label = "Niño\n82/83", 
              angle = 0, vjust = 0, 
-             color = "#F9F7F3", size = 2.6, family = "Sanchez"),
+             color = "#F9F7F3", size = 1.5, family = "Sanchez"),
     # FEN 98
     annotate("text", x = 1997.5, y = -0.5, 
              label = "Niño\n97/98", 
              angle = 0, vjust = 0, 
-             color = "#F9F7F3", size = 2.6, family = "Sanchez"),
+             color = "#F9F7F3", size = 1.5, family = "Sanchez"),
     # FEN 23
     annotate("text", x = 2024.5, y = -0.5, 
              label = "¿Niño\n23/24?", 
              angle = 0, vjust = 0, 
-             color = "#F9F7F3", size = 2.6, family = "Sanchez")
+             color = "#F9F7F3", size = 1.5, family = "Sanchez")
 )
 ```
 
 
- - Estilizamos:
+## 5. Estilizamos:
 ```{r stylize_plot, fig.width=6, fig.height=6}
 #| echo: false
 p_base + annotations_list +     # Missing data
     annotate("text", x = 2013.5, y = mean(range(df_week$week)), 
              label = "2013 y 2014 sin datos disponibles", 
-             size = 3, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5)
+             size = 2, color = "#808080", family = "Sanchez", angle = 90, vjust = 0.5)
 
-ggsave("outputs/heatmap.png") |> suppressMessages()
-ggsave("outputs/heatmap.svg") |> suppressMessages()
+ggsave("outputs/heatmap.png", width = 1200, height = 1200, units = "px") |> suppressMessages()
+# ggsave("outputs/heatmap.svg", width = 1200, height = 1200, units = "px") |> suppressMessages()
 
 ```
 
