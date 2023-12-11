@@ -121,7 +121,7 @@ glimpse(yearly_averages_corrected)
 cat("\n")
 ```
 
-## Datasets a nivel nacional - Agregar estaciones es un mal promedio
+## Datasets a nivel nacional
 ```{r wrangling_national}
 #| echo: false
 daily_data_national <- daily_data |> 
