@@ -1,4 +1,4 @@
-# senamhi
+# Temperaturas Perú
 Ensayos con datos meteorológicos
 
 Datos de NOAA:
