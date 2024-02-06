@@ -1,5 +1,7 @@
 # Make sure to replace the last_batch.csv file with the one having data from 2023-11-01 on
 # Run this script
+library(readr)
+library(dplyr)
 
 last_batch <- read_csv(
     "data/raw/last_batch.csv",
