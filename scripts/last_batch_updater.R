@@ -2,6 +2,7 @@
 # Run this script
 library(readr)
 library(dplyr)
+load("data/per_noaa_1947_2023_oct.RData")
 
 last_batch <- read_csv(
     "data/raw/last_batch.csv",
